@@ -247,11 +247,15 @@
                     <!-- строки будут добавляться скриптом -->
                 </div>
 
-                <div class="btn-row">
-                    <button class="btn btn-secondary" onclick="addRow()">+ Добавить символ</button>
-                    <button class="btn btn-secondary" onclick="normalize()">Нормализовать</button>
-                    <button class="btn" onclick="calculate()">Вычислить</button>
-                </div>
+                <div style="margin: 0.8rem 0 0.5rem; font-size: 1rem;">
+    Сумма вероятностей: <strong id="probSum" style="font-size: 1.15rem;">0.000000</strong>
+</div>
+
+<div class="btn-row">
+    <button class="btn btn-secondary" onclick="addRow()">+ Добавить символ</button>
+    <button class="btn btn-secondary" onclick="normalize()">Нормализовать</button>
+    <button class="btn" onclick="calculate()">Вычислить</button>
+</div>
 
                 <div class="error" id="error"></div>
 
@@ -327,7 +331,7 @@
         function traverse(node, code = '') {
             if (!node) return;
             if (node.symbol !== null) {
-                codes[node.symbol] = code || '0'; // на случай одного символа
+                codes[node.symbol] = code || '0';
                 return;
             }
             traverse(node.left, code + '0');
@@ -343,11 +347,12 @@
         const div = document.createElement('div');
         div.className = 'row';
         div.innerHTML = `
-            <input type="text" placeholder="Символ" value="${symbol}" maxlength="3">
-            <input type="number" placeholder="Вероятность" value="${prob}" min="0" max="1" step="0.001">
-            <button class="btn-remove" onclick="this.parentElement.remove()">×</button>
+            <input type="text" placeholder="Символ" value="${symbol}" maxlength="3" oninput="updateSum()">
+            <input type="number" placeholder="Вероятность" value="${prob}" min="0" max="1" step="0.0001" oninput="updateSum()">
+            <button class="btn-remove" onclick="this.parentElement.remove(); updateSum();">×</button>
         `;
         rows.appendChild(div);
+        updateSum();
     }
 
     function getData() {
@@ -356,9 +361,9 @@
         const probs = [];
 
         rows.forEach(row => {
-            const s = row.children[0].value.trim();
-            const p = parseFloat(row.children[1].value);
-            if (s && !isNaN(p) && p > 0) {
+            const s = row.querySelector('input[type="text"]').value.trim();
+            const p = parseFloat(row.querySelector('input[type="number"]').value);
+            if (s !== '' && !isNaN(p) && p >= 0) {
                 symbols.push(s);
                 probs.push(p);
             }
@@ -366,23 +371,51 @@
         return { symbols, probs };
     }
 
-    function normalize() {
-        const { symbols, probs } = getData();
-        if (probs.length === 0) return;
-
+    function updateSum() {
+        const { probs } = getData();
         const sum = probs.reduce((a, b) => a + b, 0);
-        if (sum === 0) return;
+        const sumEl = document.getElementById('probSum');
+        
+        if (sumEl) {
+            sumEl.textContent = sum.toFixed(6);
+            
+            // Цветовая индикация
+            if (Math.abs(sum - 1) < 0.0001) {
+                sumEl.style.color = '#276749';          // зелёный — всё хорошо
+            } else if (sum > 1.0001) {
+                sumEl.style.color = '#c53030';          // красный — больше 1
+            } else {
+                sumEl.style.color = '#c05621';          // оранжевый — меньше 1
+            }
+        }
+    }
 
+    function normalize() {
         const rows = document.querySelectorAll('#rows .row');
-        let idx = 0;
+        let total = 0;
+        const values = [];
+
+        // Сначала собираем все валидные вероятности
         rows.forEach(row => {
-            const s = row.children[0].value.trim();
-            const p = parseFloat(row.children[1].value);
-            if (s && !isNaN(p) && p > 0) {
-                row.children[1].value = (probs[idx] / sum).toFixed(6);
-                idx++;
+            const input = row.querySelector('input[type="number"]');
+            const p = parseFloat(input.value);
+            if (!isNaN(p) && p >= 0) {
+                values.push({ input, p });
+                total += p;
             }
         });
+
+        if (total === 0) {
+            alert('Нет положительных вероятностей для нормализации');
+            return;
+        }
+
+        // Нормализуем
+        values.forEach(item => {
+            item.input.value = (item.p / total).toFixed(6);
+        });
+
+        updateSum();
     }
 
     function calculate() {
@@ -392,7 +425,7 @@
         let { symbols, probs } = getData();
 
         if (symbols.length < 1) {
-            errorEl.textContent = 'Добавьте хотя бы один символ с положительной вероятностью';
+            errorEl.textContent = 'Добавьте хотя бы один символ с вероятностью';
             errorEl.style.display = 'block';
             return;
         }
@@ -406,7 +439,7 @@
 
         const sum = probs.reduce((a, b) => a + b, 0);
         if (Math.abs(sum - 1) > 0.001) {
-            errorEl.textContent = `Сумма вероятностей = ${sum.toFixed(4)}. Она должна быть равна 1. Нажмите «Нормализовать».`;
+            errorEl.textContent = `Сумма вероятностей = ${sum.toFixed(6)}. Она должна быть равна 1. Нажмите «Нормализовать».`;
             errorEl.style.display = 'block';
             return;
         }
@@ -436,7 +469,6 @@
         const tbody = document.getElementById('tableBody');
         tbody.innerHTML = '';
 
-        // Сортируем по вероятности (по убыванию)
         const items = symbols.map((s, i) => ({
             symbol: s,
             prob: probs[i],
@@ -462,10 +494,13 @@
     }
 
     // Стартовые строки
-    addRow('A', '0.4');
-    addRow('B', '0.3');
-    addRow('C', '0.2');
-    addRow('D', '0.1');
+    document.addEventListener('DOMContentLoaded', () => {
+        addRow('A', '0.4');
+        addRow('B', '0.3');
+        addRow('C', '0.2');
+        addRow('D', '0.1');
+        updateSum();
+    });
 </script>
 
 </body>
