@@ -190,15 +190,18 @@
             <h3>Калькулятор</h3>
             <p>Введите слово (или любую последовательность символов). Регистр не учитывается.</p>
 
-            <div class="calculator">
-                <div class="input-group">
+           <div class="calculator">
+    <div class="calculator-title">
+        Калькулятор перестановок
+    </div>
+    <div class="input-group">
                     <input type="text" id="wordInput" placeholder="Например: ABBA или MISSISSIPPI" maxlength="40">
                     <button class="btn" onclick="calculate()">Вычислить</button>
                 </div>
 
                 <div class="result-box" id="resultBox">
-                    <div>Количество различных перестановок:</div>
-                    <div class="result-value" id="resultValue">—</div>
+                    <div class="result-label">Количество различных перестановок</div>
+<div class="result-value" id="resultValue">—</div>
 
                     <div class="steps" id="steps"></div>
                 </div>
