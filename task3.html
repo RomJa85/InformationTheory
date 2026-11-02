@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Задание 3 — Теория информации</title>
+    <title>Задание 3 — Операция XOR (чётность)</title>
     <link rel="stylesheet" href="style.css">
     
     <script>
@@ -15,6 +15,137 @@
         };
     </script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        .calculator {
+            background: linear-gradient(135deg, #ebf8ff 0%, #e6fffa 100%);
+            border: 2px solid #3182ce;
+            border-radius: 14px;
+            padding: 1.75rem;
+            margin: 1.75rem 0;
+            box-shadow: 0 4px 12px rgba(49, 130, 206, 0.15);
+        }
+
+        .calculator-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2b6cb0;
+            margin-bottom: 1rem;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .input-group input {
+            flex: 1;
+            min-width: 220px;
+            padding: 0.9rem 1.1rem;
+            font-size: 1.15rem;
+            border: 2px solid #90cdf4;
+            border-radius: 10px;
+            outline: none;
+            transition: all 0.2s;
+            background: white;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 1px;
+        }
+
+        .input-group input:focus {
+            border-color: #2b6cb0;
+            box-shadow: 0 0 0 3px rgba(43, 108, 176, 0.2);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #2b6cb0, #2c5282);
+            color: white;
+            border: none;
+            padding: 0.9rem 1.75rem;
+            font-size: 1.05rem;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 6px rgba(43, 108, 176, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(43, 108, 176, 0.4);
+            background: linear-gradient(135deg, #2c5282, #1a365d);
+        }
+
+        .result-box {
+            display: none;
+            margin-top: 1.75rem;
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid #bee3f8;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .result-label {
+            font-size: 0.95rem;
+            color: #4a5568;
+            margin-bottom: 0.25rem;
+        }
+
+        .result-value {
+            font-size: 2.4rem;
+            font-weight: 700;
+            color: #2b6cb0;
+            margin-bottom: 1.25rem;
+            font-family: 'Courier New', monospace;
+        }
+
+        .steps {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 1.25rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .step {
+            margin-bottom: 0.9rem;
+            padding-bottom: 0.9rem;
+            border-bottom: 1px dashed #cbd5e0;
+        }
+
+        .step:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .step-title {
+            font-weight: 600;
+            color: #2c5282;
+            font-size: 0.9rem;
+            margin-bottom: 0.3rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .xor-expression {
+            font-family: 'Courier New', monospace;
+            font-size: 1.15rem;
+            background: #edf2f7;
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            display: inline-block;
+            margin-top: 0.3rem;
+        }
+
+        .hint {
+            font-size: 0.9rem;
+            color: #718096;
+            margin-top: 0.5rem;
+        }
+    </style>
 </head>
 <body>
 
@@ -38,23 +169,52 @@
 <main>
     <div class="container">
         <div class="card">
-            <h2>Задание 3</h2>
-            <p style="color: #718096; margin-bottom: 1.5rem;"><em>Название задания появится позже</em></p>
+            <h2>Задание 3. Операция XOR (чётность)</h2>
+            
+            <h3>Теория</h3>
+            <p>Операция <strong>XOR</strong> (исключающее ИЛИ) используется во всех проверках чётности кода Хэмминга.</p>
+            
+            <p>Правила:</p>
+            <ul>
+                <li>\( 0 \oplus 0 = 0 \)</li>
+                <li>\( 0 \oplus 1 = 1 \)</li>
+                <li>\( 1 \oplus 0 = 1 \)</li>
+                <li>\( 1 \oplus 1 = 0 \)</li>
+            </ul>
 
-            <h3>Условие</h3>
-            <div class="placeholder">
-                <p>Здесь будет условие задания</p>
+            <p>XOR нескольких битов равен <strong>1</strong>, если количество единиц нечётное, и <strong>0</strong>, если количество единиц чётное.</p>
+
+            <div class="math">
+                $$ a_1 \oplus a_2 \oplus \ldots \oplus a_n = (a_1 + a_2 + \ldots + a_n) \bmod 2 $$
             </div>
 
-            <h3>Решение</h3>
-            <div class="placeholder">
-                <p>Здесь будет подробное решение с расчётами и формулами</p>
+            <h3>Калькулятор</h3>
+            <p>Введите последовательность из нулей и единиц (пробелы и другие символы будут проигнорированы).</p>
+
+            <div class="calculator">
+                <div class="calculator-title">Калькулятор XOR</div>
+                
+                <div class="input-group">
+                    <input type="text" id="bitInput" placeholder="Например: 1011 или 1 0 1 1 0" maxlength="64">
+                    <button class="btn" onclick="calculate()">Вычислить</button>
+                </div>
+                <div class="hint">Можно вводить только 0 и 1. Остальные символы удаляются автоматически.</div>
+
+                <div class="result-box" id="resultBox">
+                    <div class="result-label">Результат XOR</div>
+                    <div class="result-value" id="resultValue">—</div>
+
+                    <div class="steps" id="steps"></div>
+                </div>
             </div>
 
-            <h3>Ответ</h3>
-            <div class="placeholder">
-                <p>Здесь будет итоговый ответ</p>
-            </div>
+            <h3>Примеры для проверки</h3>
+            <ul>
+                <li><code>101</code> → \( 1 \oplus 0 \oplus 1 = 0 \) (чётное число единиц)</li>
+                <li><code>1110</code> → \( 1 \oplus 1 \oplus 1 \oplus 0 = 1 \) (нечётное число единиц)</li>
+                <li><code>0000</code> → \( 0 \)</li>
+                <li><code>1</code> → \( 1 \)</li>
+            </ul>
         </div>
     </div>
 </main>
@@ -64,6 +224,71 @@
         Теория информации • GitHub Pages
     </div>
 </footer>
+
+<script>
+    function calculate() {
+        const raw = document.getElementById('bitInput').value;
+        const resultBox = document.getElementById('resultBox');
+        const resultValue = document.getElementById('resultValue');
+        const steps = document.getElementById('steps');
+
+        // Оставляем только 0 и 1
+        const bits = raw.replace(/[^01]/g, '').split('').map(Number);
+
+        if (bits.length === 0) {
+            alert('Введите хотя бы один бит (0 или 1)');
+            return;
+        }
+
+        // Считаем XOR
+        let xor = 0;
+        for (const bit of bits) {
+            xor ^= bit;
+        }
+
+        const onesCount = bits.filter(b => b === 1).length;
+        const parity = onesCount % 2 === 0 ? 'чётное' : 'нечётное';
+
+        // Вывод результата
+        resultValue.textContent = xor;
+        resultBox.style.display = 'block';
+
+        // Шаги
+        let html = '';
+
+        html += `<div class="step">
+            <div class="step-title">Шаг 1. Очищенная последовательность</div>
+            <div class="xor-expression">${bits.join(' ')}</div>
+        </div>`;
+
+        html += `<div class="step">
+            <div class="step-title">Шаг 2. Выражение XOR</div>
+            <div class="xor-expression">${bits.join(' ⊕ ')} = ${xor}</div>
+        </div>`;
+
+        html += `<div class="step">
+            <div class="step-title">Шаг 3. Количество единиц</div>
+            <div>Всего единиц: <strong>${onesCount}</strong> → ${parity} число</div>
+        </div>`;
+
+        html += `<div class="step">
+            <div class="step-title">Шаг 4. Интерпретация</div>
+            <div>
+                ${onesCount % 2 === 0 
+                    ? 'Чётное количество единиц → результат XOR = <strong>0</strong> (чётная чётность)' 
+                    : 'Нечётное количество единиц → результат XOR = <strong>1</strong> (нечётная чётность)'}
+            </div>
+        </div>`;
+
+        steps.innerHTML = html;
+        resultBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // Enter запускает расчёт
+    document.getElementById('bitInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') calculate();
+    });
+</script>
 
 </body>
 </html>
