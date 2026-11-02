@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Задание 1 — Теория информации</title>
+    <title>Задание 1 — Перестановки с повторениями</title>
     <link rel="stylesheet" href="style.css">
     
     <script>
@@ -15,6 +15,93 @@
         };
     </script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        .calculator {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .input-group {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        .input-group input {
+            flex: 1;
+            min-width: 200px;
+            padding: 0.75rem 1rem;
+            font-size: 1.1rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .input-group input:focus {
+            border-color: var(--accent);
+        }
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn:hover {
+            background: var(--primary-light);
+        }
+        .result-box {
+            display: none;
+            margin-top: 1.5rem;
+        }
+        .result-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 0.5rem 0 1rem;
+        }
+        .steps {
+            background: white;
+            border-radius: 8px;
+            padding: 1.25rem;
+            border: 1px solid var(--border);
+        }
+        .step {
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px dashed #e2e8f0;
+        }
+        .step:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .step-title {
+            font-weight: 600;
+            color: var(--primary-light);
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+        .freq-table {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 0.75rem 0;
+        }
+        .freq-item {
+            background: #edf2f7;
+            padding: 0.35rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.95rem;
+        }
+    </style>
 </head>
 <body>
 
@@ -38,23 +125,41 @@
 <main>
     <div class="container">
         <div class="card">
-            <h2>Задание 1</h2>
-            <p style="color: #718096; margin-bottom: 1.5rem;"><em>Название задания появится позже</em></p>
-
-            <h3>Условие</h3>
-            <div class="placeholder">
-                <p>Здесь будет условие задания</p>
+            <h2>Задание 1. Перестановки с повторениями</h2>
+            
+            <h3>Теория</h3>
+            <p>Если среди \( n \) объектов есть повторяющиеся, то количество <strong>различных</strong> перестановок меньше, чем \( n! \).</p>
+            <p>Пусть объект \( a_1 \) встречается \( m_1 \) раз, объект \( a_2 \) — \( m_2 \) раз и т.д. Тогда число различных перестановок равно:</p>
+            
+            <div class="math">
+                $$ N = \dfrac{n!}{m_1! \cdot m_2! \cdot \ldots \cdot m_k!} $$
             </div>
 
-            <h3>Решение</h3>
-            <div class="placeholder">
-                <p>Здесь будет подробное решение с расчётами и формулами</p>
+            <p>Мы делим на факториалы количеств повторений, потому что перестановки одинаковых объектов между собой не создают новых различных последовательностей.</p>
+
+            <h3>Калькулятор</h3>
+            <p>Введите слово (или любую последовательность символов). Регистр не учитывается.</p>
+
+            <div class="calculator">
+                <div class="input-group">
+                    <input type="text" id="wordInput" placeholder="Например: ABBA или MISSISSIPPI" maxlength="40">
+                    <button class="btn" onclick="calculate()">Вычислить</button>
+                </div>
+
+                <div class="result-box" id="resultBox">
+                    <div>Количество различных перестановок:</div>
+                    <div class="result-value" id="resultValue">—</div>
+
+                    <div class="steps" id="steps"></div>
+                </div>
             </div>
 
-            <h3>Ответ</h3>
-            <div class="placeholder">
-                <p>Здесь будет итоговый ответ</p>
-            </div>
+            <h3>Примеры для проверки</h3>
+            <ul>
+                <li><strong>ABBA</strong> → \( \dfrac{4!}{2! \cdot 2!} = 6 \)</li>
+                <li><strong>GALOIS</strong> → \( 6! = 720 \) (все буквы разные)</li>
+                <li><strong>MISSISSIPPI</strong> → \( \dfrac{11!}{4! \cdot 4! \cdot 2!} = 34650 \)</li>
+            </ul>
         </div>
     </div>
 </main>
@@ -64,6 +169,104 @@
         Теория информации • GitHub Pages
     </div>
 </footer>
+
+<script>
+    function factorial(n) {
+        if (n < 0) return NaN;
+        let res = 1n;
+        for (let i = 2n; i <= BigInt(n); i++) res *= i;
+        return res;
+    }
+
+    function calculate() {
+        const input = document.getElementById('wordInput').value.trim();
+        const resultBox = document.getElementById('resultBox');
+        const resultValue = document.getElementById('resultValue');
+        const steps = document.getElementById('steps');
+
+        if (!input) {
+            alert('Введите слово');
+            return;
+        }
+
+        // Приводим к верхнему регистру и считаем частоты
+        const word = input.toUpperCase();
+        const n = word.length;
+        const freq = {};
+
+        for (const char of word) {
+            freq[char] = (freq[char] || 0) + 1;
+        }
+
+        // Вычисляем
+        let numerator = factorial(n);
+        let denominator = 1n;
+        const repeats = [];
+
+        for (const [char, count] of Object.entries(freq)) {
+            if (count > 1) {
+                denominator *= factorial(count);
+                repeats.push({ char, count });
+            }
+        }
+
+        const result = numerator / denominator;
+
+        // Вывод
+        resultValue.textContent = result.toString();
+        resultBox.style.display = 'block';
+
+        // Шаги
+        let html = '';
+
+        html += `<div class="step">
+            <div class="step-title">Шаг 1. Длина слова</div>
+            <div>n = ${n}</div>
+        </div>`;
+
+        html += `<div class="step">
+            <div class="step-title">Шаг 2. Частоты букв</div>
+            <div class="freq-table">`;
+        
+        for (const [char, count] of Object.entries(freq)) {
+            html += `<div class="freq-item">${char} → ${count}</div>`;
+        }
+        html += `</div></div>`;
+
+        if (repeats.length === 0) {
+            html += `<div class="step">
+                <div class="step-title">Шаг 3. Все символы уникальны</div>
+                <div>N = ${n}! = ${result}</div>
+            </div>`;
+        } else {
+            html += `<div class="step">
+                <div class="step-title">Шаг 3. Формула</div>
+                <div>N = ${n}! / (`;
+            
+            html += repeats.map(r => `${r.count}!`).join(' · ');
+            html += `)</div>
+            </div>`;
+
+            html += `<div class="step">
+                <div class="step-title">Шаг 4. Вычисление</div>
+                <div>${n}! = ${numerator}<br>`;
+            
+            html += repeats.map(r => `${r.count}! = ${factorial(r.count)}`).join('<br>');
+            html += `<br><br>N = ${numerator} / ${denominator} = <strong>${result}</strong></div>
+            </div>`;
+        }
+
+        steps.innerHTML = html;
+
+        // Прокрутка к результату
+        resultBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // Enter тоже запускает расчёт
+    document.getElementById('wordInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') calculate();
+    });
+</script>
 
 </body>
 </html>
