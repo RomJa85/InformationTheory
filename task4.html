@@ -512,11 +512,6 @@
         addRow('B', '0.3');
         addRow('C', '0.2');
         addRow('D', '0.1');
-
-        // Назначаем обработчики кнопок (на случай, если onclick не сработал)
-        document.querySelector('button[onclick="normalize()"]')?.addEventListener('click', normalize);
-        document.querySelector('button[onclick="calculate()"]')?.addEventListener('click', calculate);
-        document.querySelector('button[onclick="addRow()"]')?.addEventListener('click', () => addRow());
     });
 </script>
 
