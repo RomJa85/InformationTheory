@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Задание 4 — Теория информации</title>
+    <title>Задание 4 — Энтропия и код Хаффмана</title>
     <link rel="stylesheet" href="style.css">
     
     <script>
@@ -15,6 +15,195 @@
         };
     </script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        .calculator {
+            background: linear-gradient(135deg, #ebf8ff 0%, #e6fffa 100%);
+            border: 2px solid #3182ce;
+            border-radius: 14px;
+            padding: 1.75rem;
+            margin: 1.75rem 0;
+            box-shadow: 0 4px 12px rgba(49, 130, 206, 0.15);
+        }
+
+        .calculator-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2b6cb0;
+            margin-bottom: 1rem;
+        }
+
+        .rows {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            margin-bottom: 1rem;
+        }
+
+        .row {
+            display: flex;
+            gap: 0.6rem;
+            align-items: center;
+        }
+
+        .row input[type="text"] {
+            width: 80px;
+            padding: 0.6rem;
+            font-size: 1rem;
+            border: 2px solid #90cdf4;
+            border-radius: 8px;
+            text-align: center;
+            outline: none;
+        }
+
+        .row input[type="number"] {
+            flex: 1;
+            padding: 0.6rem 0.8rem;
+            font-size: 1rem;
+            border: 2px solid #90cdf4;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        .row input:focus {
+            border-color: #2b6cb0;
+            box-shadow: 0 0 0 3px rgba(43, 108, 176, 0.15);
+        }
+
+        .btn-remove {
+            background: #fc8181;
+            color: white;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            line-height: 1;
+        }
+
+        .btn-remove:hover {
+            background: #e53e3e;
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #2b6cb0, #2c5282);
+            color: white;
+            border: none;
+            padding: 0.7rem 1.3rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 6px rgba(43, 108, 176, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(43, 108, 176, 0.4);
+        }
+
+        .btn-secondary {
+            background: #edf2f7;
+            color: #2d3748;
+            box-shadow: none;
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .result-box {
+            display: none;
+            margin-top: 1.75rem;
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid #bee3f8;
+        }
+
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .metric {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+        }
+
+        .metric-label {
+            font-size: 0.85rem;
+            color: #718096;
+            margin-bottom: 0.3rem;
+        }
+
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2b6cb0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            font-size: 0.95rem;
+        }
+
+        th, td {
+            padding: 0.7rem 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: #edf2f7;
+            color: #2c5282;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: #f7fafc;
+        }
+
+        .code {
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+            color: #2b6cb0;
+            letter-spacing: 1px;
+        }
+
+        .hint {
+            font-size: 0.9rem;
+            color: #718096;
+            margin-top: 0.75rem;
+        }
+
+        .error {
+            color: #c53030;
+            background: #fff5f5;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: none;
+        }
+    </style>
 </head>
 <body>
 
@@ -38,23 +227,70 @@
 <main>
     <div class="container">
         <div class="card">
-            <h2>Задание 4</h2>
-            <p style="color: #718096; margin-bottom: 1.5rem;"><em>Название задания появится позже</em></p>
-
-            <h3>Условие</h3>
-            <div class="placeholder">
-                <p>Здесь будет условие задания</p>
+            <h2>Задание 4. Энтропия и код Хаффмана</h2>
+            
+            <h3>Теория</h3>
+            <p>Энтропия Шеннона показывает среднюю неопределённость источника:</p>
+            <div class="math">
+                $$ H(X) = -\sum_{i} p_i \log_2 p_i $$
             </div>
 
-            <h3>Решение</h3>
-            <div class="placeholder">
-                <p>Здесь будет подробное решение с расчётами и формулами</p>
+            <p>Код Хаффмана строит префиксный код с минимальной средней длиной кодового слова. Частые символы получают короткие коды, редкие — длинные.</p>
+
+            <h3>Калькулятор</h3>
+            <p>Введите символы и их вероятности. Сумма вероятностей должна быть равна 1 (можно воспользоваться кнопкой «Нормализовать»).</p>
+
+            <div class="calculator">
+                <div class="calculator-title">Распределение и код Хаффмана</div>
+
+                <div class="rows" id="rows">
+                    <!-- строки будут добавляться скриптом -->
+                </div>
+
+                <div class="btn-row">
+                    <button class="btn btn-secondary" onclick="addRow()">+ Добавить символ</button>
+                    <button class="btn btn-secondary" onclick="normalize()">Нормализовать</button>
+                    <button class="btn" onclick="calculate()">Вычислить</button>
+                </div>
+
+                <div class="error" id="error"></div>
+
+                <div class="result-box" id="resultBox">
+                    <div class="metrics">
+                        <div class="metric">
+                            <div class="metric-label">Энтропия H(X)</div>
+                            <div class="metric-value" id="entropyVal">—</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Средняя длина L</div>
+                            <div class="metric-value" id="avgLenVal">—</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Избыточность</div>
+                            <div class="metric-value" id="redundancyVal">—</div>
+                        </div>
+                    </div>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Символ</th>
+                                <th>Вероятность</th>
+                                <th>Код Хаффмана</th>
+                                <th>Длина</th>
+                                <th>Вклад в L</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody"></tbody>
+                    </table>
+                </div>
             </div>
 
-            <h3>Ответ</h3>
-            <div class="placeholder">
-                <p>Здесь будет итоговый ответ</p>
-            </div>
+            <h3>Примеры</h3>
+            <ul>
+                <li>A: 0.5, B: 0.25, C: 0.125, D: 0.125 → H ≈ 1.75 бит</li>
+                <li>Равномерное распределение из 4 символов → H = 2 бита</li>
+            </ul>
         </div>
     </div>
 </main>
@@ -64,6 +300,173 @@
         Теория информации • GitHub Pages
     </div>
 </footer>
+
+<script>
+    // ========== Huffman ==========
+    class Node {
+        constructor(symbol, prob, left = null, right = null) {
+            this.symbol = symbol;
+            this.prob = prob;
+            this.left = left;
+            this.right = right;
+        }
+    }
+
+    function buildHuffman(symbols, probs) {
+        let nodes = symbols.map((s, i) => new Node(s, probs[i]));
+
+        while (nodes.length > 1) {
+            nodes.sort((a, b) => a.prob - b.prob);
+            const left = nodes.shift();
+            const right = nodes.shift();
+            const parent = new Node(null, left.prob + right.prob, left, right);
+            nodes.push(parent);
+        }
+
+        const codes = {};
+        function traverse(node, code = '') {
+            if (!node) return;
+            if (node.symbol !== null) {
+                codes[node.symbol] = code || '0'; // на случай одного символа
+                return;
+            }
+            traverse(node.left, code + '0');
+            traverse(node.right, code + '1');
+        }
+        traverse(nodes[0]);
+        return codes;
+    }
+
+    // ========== UI ==========
+    function addRow(symbol = '', prob = '') {
+        const rows = document.getElementById('rows');
+        const div = document.createElement('div');
+        div.className = 'row';
+        div.innerHTML = `
+            <input type="text" placeholder="Символ" value="${symbol}" maxlength="3">
+            <input type="number" placeholder="Вероятность" value="${prob}" min="0" max="1" step="0.001">
+            <button class="btn-remove" onclick="this.parentElement.remove()">×</button>
+        `;
+        rows.appendChild(div);
+    }
+
+    function getData() {
+        const rows = document.querySelectorAll('#rows .row');
+        const symbols = [];
+        const probs = [];
+
+        rows.forEach(row => {
+            const s = row.children[0].value.trim();
+            const p = parseFloat(row.children[1].value);
+            if (s && !isNaN(p) && p > 0) {
+                symbols.push(s);
+                probs.push(p);
+            }
+        });
+        return { symbols, probs };
+    }
+
+    function normalize() {
+        const { symbols, probs } = getData();
+        if (probs.length === 0) return;
+
+        const sum = probs.reduce((a, b) => a + b, 0);
+        if (sum === 0) return;
+
+        const rows = document.querySelectorAll('#rows .row');
+        let idx = 0;
+        rows.forEach(row => {
+            const s = row.children[0].value.trim();
+            const p = parseFloat(row.children[1].value);
+            if (s && !isNaN(p) && p > 0) {
+                row.children[1].value = (probs[idx] / sum).toFixed(6);
+                idx++;
+            }
+        });
+    }
+
+    function calculate() {
+        const errorEl = document.getElementById('error');
+        errorEl.style.display = 'none';
+
+        let { symbols, probs } = getData();
+
+        if (symbols.length < 1) {
+            errorEl.textContent = 'Добавьте хотя бы один символ с положительной вероятностью';
+            errorEl.style.display = 'block';
+            return;
+        }
+
+        // Проверка уникальности символов
+        if (new Set(symbols).size !== symbols.length) {
+            errorEl.textContent = 'Символы должны быть уникальными';
+            errorEl.style.display = 'block';
+            return;
+        }
+
+        const sum = probs.reduce((a, b) => a + b, 0);
+        if (Math.abs(sum - 1) > 0.001) {
+            errorEl.textContent = `Сумма вероятностей = ${sum.toFixed(4)}. Она должна быть равна 1. Нажмите «Нормализовать».`;
+            errorEl.style.display = 'block';
+            return;
+        }
+
+        // Энтропия
+        let entropy = 0;
+        probs.forEach(p => {
+            if (p > 0) entropy -= p * Math.log2(p);
+        });
+
+        // Хаффман
+        const codes = buildHuffman(symbols, probs);
+
+        // Средняя длина
+        let avgLen = 0;
+        symbols.forEach((s, i) => {
+            avgLen += probs[i] * codes[s].length;
+        });
+
+        const redundancy = avgLen - entropy;
+
+        // Вывод
+        document.getElementById('entropyVal').textContent = entropy.toFixed(4);
+        document.getElementById('avgLenVal').textContent = avgLen.toFixed(4);
+        document.getElementById('redundancyVal').textContent = redundancy.toFixed(4);
+
+        const tbody = document.getElementById('tableBody');
+        tbody.innerHTML = '';
+
+        // Сортируем по вероятности (по убыванию)
+        const items = symbols.map((s, i) => ({
+            symbol: s,
+            prob: probs[i],
+            code: codes[s],
+            len: codes[s].length,
+            contrib: probs[i] * codes[s].length
+        })).sort((a, b) => b.prob - a.prob);
+
+        items.forEach(item => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><strong>${item.symbol}</strong></td>
+                <td>${item.prob.toFixed(4)}</td>
+                <td class="code">${item.code}</td>
+                <td>${item.len}</td>
+                <td>${item.contrib.toFixed(4)}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        document.getElementById('resultBox').style.display = 'block';
+        document.getElementById('resultBox').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // Стартовые строки
+    addRow('A', '0.4');
+    addRow('B', '0.3');
+    addRow('C', '0.2');
+    addRow('D', '0.1');
+</script>
 
 </body>
 </html>
