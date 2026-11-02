@@ -1,0 +1,176 @@
+:root {
+    --primary: #1a365d;
+    --primary-light: #2c5282;
+    --accent: #2b6cb0;
+    --bg: #f7fafc;
+    --card-bg: #ffffff;
+    --text: #2d3748;
+    --text-light: #4a5568;
+    --border: #e2e8f0;
+    --success: #276749;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+/* Header */
+header {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: white;
+    padding: 1.5rem 0;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+header h1 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+header p {
+    opacity: 0.9;
+    font-size: 0.95rem;
+}
+
+/* Navigation */
+nav {
+    background: white;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+nav .container {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    overflow-x: auto;
+}
+
+nav a {
+    text-decoration: none;
+    color: var(--text-light);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    white-space: nowrap;
+    transition: all 0.2s;
+}
+
+nav a:hover {
+    background: #edf2f7;
+    color: var(--primary);
+}
+
+nav a.active {
+    background: var(--primary);
+    color: white;
+}
+
+/* Main content */
+main {
+    padding: 2rem 0 4rem;
+}
+
+.card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--border);
+}
+
+.card h2 {
+    color: var(--primary);
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--border);
+}
+
+.card h3 {
+    color: var(--primary-light);
+    font-size: 1.2rem;
+    margin: 1.5rem 0 0.75rem;
+}
+
+/* Placeholder content */
+.placeholder {
+    background: #edf2f7;
+    border: 2px dashed #a0aec0;
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    color: #718096;
+    margin: 1.5rem 0;
+}
+
+.placeholder p {
+    margin-bottom: 0.5rem;
+}
+
+/* Formulas */
+.math {
+    overflow-x: auto;
+    margin: 1rem 0;
+}
+
+/* Lists */
+ul, ol {
+    margin: 1rem 0 1rem 1.5rem;
+}
+
+li {
+    margin-bottom: 0.4rem;
+}
+
+/* Footer */
+footer {
+    background: var(--primary);
+    color: white;
+    text-align: center;
+    padding: 1.25rem;
+    font-size: 0.9rem;
+    margin-top: auto;
+}
+
+footer a {
+    color: #90cdf4;
+    text-decoration: none;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    header h1 {
+        font-size: 1.4rem;
+    }
+    
+    .card {
+        padding: 1.25rem;
+    }
+    
+    nav .container {
+        padding: 0.5rem 1rem;
+    }
+}
