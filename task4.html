@@ -1,310 +1,3 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Задание 4 — Энтропия и код Хаффмана</title>
-    <link rel="stylesheet" href="style.css">
-    
-    <script>
-        MathJax = {
-            tex: {
-                inlineMath: [['$', '$'], ['\\(', '\\)']],
-                displayMath: [['$$', '$$'], ['\\[', '\\]']]
-            }
-        };
-    </script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-
-    <style>
-        .calculator {
-            background: linear-gradient(135deg, #ebf8ff 0%, #e6fffa 100%);
-            border: 2px solid #3182ce;
-            border-radius: 14px;
-            padding: 1.75rem;
-            margin: 1.75rem 0;
-            box-shadow: 0 4px 12px rgba(49, 130, 206, 0.15);
-        }
-
-        .calculator-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #2b6cb0;
-            margin-bottom: 1rem;
-        }
-
-        .rows {
-            display: flex;
-            flex-direction: column;
-            gap: 0.6rem;
-            margin-bottom: 1rem;
-        }
-
-        .row {
-            display: flex;
-            gap: 0.6rem;
-            align-items: center;
-        }
-
-        .row input[type="text"] {
-            width: 80px;
-            padding: 0.6rem;
-            font-size: 1rem;
-            border: 2px solid #90cdf4;
-            border-radius: 8px;
-            text-align: center;
-            outline: none;
-        }
-
-        .row input[type="number"] {
-            flex: 1;
-            padding: 0.6rem 0.8rem;
-            font-size: 1rem;
-            border: 2px solid #90cdf4;
-            border-radius: 8px;
-            outline: none;
-        }
-
-        .row input:focus {
-            border-color: #2b6cb0;
-            box-shadow: 0 0 0 3px rgba(43, 108, 176, 0.15);
-        }
-
-        .btn-remove {
-            background: #fc8181;
-            color: white;
-            border: none;
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1.1rem;
-            line-height: 1;
-        }
-
-        .btn-remove:hover {
-            background: #e53e3e;
-        }
-
-        .btn-row {
-            display: flex;
-            gap: 0.6rem;
-            flex-wrap: wrap;
-            margin-top: 0.5rem;
-        }
-
-        .btn {
-            background: linear-gradient(135deg, #2b6cb0, #2c5282);
-            color: white;
-            border: none;
-            padding: 0.7rem 1.3rem;
-            font-size: 0.95rem;
-            font-weight: 600;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 2px 6px rgba(43, 108, 176, 0.3);
-        }
-
-        .btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 10px rgba(43, 108, 176, 0.4);
-        }
-
-        .btn-secondary {
-            background: #edf2f7;
-            color: #2d3748;
-            box-shadow: none;
-        }
-
-        .btn-secondary:hover {
-            background: #e2e8f0;
-            transform: none;
-            box-shadow: none;
-        }
-
-        .result-box {
-            display: none;
-            margin-top: 1.75rem;
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            border: 1px solid #bee3f8;
-        }
-
-        .metrics {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .metric {
-            background: #f7fafc;
-            border-radius: 10px;
-            padding: 1rem;
-            text-align: center;
-            border: 1px solid #e2e8f0;
-        }
-
-        .metric-label {
-            font-size: 0.85rem;
-            color: #718096;
-            margin-bottom: 0.3rem;
-        }
-
-        .metric-value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #2b6cb0;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-            font-size: 0.95rem;
-        }
-
-        th, td {
-            padding: 0.7rem 0.8rem;
-            text-align: left;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        th {
-            background: #edf2f7;
-            color: #2c5282;
-            font-weight: 600;
-        }
-
-        tr:hover {
-            background: #f7fafc;
-        }
-
-        .code {
-            font-family: 'Courier New', monospace;
-            font-weight: 600;
-            color: #2b6cb0;
-            letter-spacing: 1px;
-        }
-
-        .hint {
-            font-size: 0.9rem;
-            color: #718096;
-            margin-top: 0.75rem;
-        }
-
-        .error {
-            color: #c53030;
-            background: #fff5f5;
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
-            margin-top: 1rem;
-            display: none;
-        }
-    </style>
-</head>
-<body>
-
-<header>
-    <div class="container">
-        <h1>Теория информации</h1>
-        <p>Контрольная работа</p>
-    </div>
-</header>
-
-<nav>
-    <div class="container">
-        <a href="index.html">Главная</a>
-        <a href="task1.html">Задание 1</a>
-        <a href="task2.html">Задание 2</a>
-        <a href="task3.html">Задание 3</a>
-        <a href="task4.html" class="active">Задание 4</a>
-    </div>
-</nav>
-
-<main>
-    <div class="container">
-        <div class="card">
-            <h2>Задание 4. Энтропия и код Хаффмана</h2>
-            
-            <h3>Теория</h3>
-            <p>Энтропия Шеннона показывает среднюю неопределённость источника:</p>
-            <div class="math">
-                $$ H(X) = -\sum_{i} p_i \log_2 p_i $$
-            </div>
-
-            <p>Код Хаффмана строит префиксный код с минимальной средней длиной кодового слова. Частые символы получают короткие коды, редкие — длинные.</p>
-
-            <h3>Калькулятор</h3>
-            <p>Введите символы и их вероятности. Сумма вероятностей должна быть равна 1 (можно воспользоваться кнопкой «Нормализовать»).</p>
-
-            <div class="calculator">
-                <div class="calculator-title">Распределение и код Хаффмана</div>
-
-                <div class="rows" id="rows">
-                    <!-- строки будут добавляться скриптом -->
-                </div>
-
-                <div style="margin: 0.8rem 0 0.5rem; font-size: 1rem;">
-    Сумма вероятностей: <strong id="probSum" style="font-size: 1.15rem;">0.000000</strong>
-</div>
-
-<div class="btn-row">
-    <button class="btn btn-secondary" onclick="addRow()">+ Добавить символ</button>
-    <button class="btn btn-secondary" onclick="normalize()">Нормализовать</button>
-    <button class="btn" onclick="calculate()">Вычислить</button>
-</div>
-
-                <div class="error" id="error"></div>
-
-                <div class="result-box" id="resultBox">
-                    <div class="metrics">
-                        <div class="metric">
-                            <div class="metric-label">Энтропия H(X)</div>
-                            <div class="metric-value" id="entropyVal">—</div>
-                        </div>
-                        <div class="metric">
-                            <div class="metric-label">Средняя длина L</div>
-                            <div class="metric-value" id="avgLenVal">—</div>
-                        </div>
-                        <div class="metric">
-                            <div class="metric-label">Избыточность</div>
-                            <div class="metric-value" id="redundancyVal">—</div>
-                        </div>
-                    </div>
-
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Символ</th>
-                                <th>Вероятность</th>
-                                <th>Код Хаффмана</th>
-                                <th>Длина</th>
-                                <th>Вклад в L</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tableBody"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <h3>Примеры</h3>
-            <ul>
-                <li>A: 0.5, B: 0.25, C: 0.125, D: 0.125 → H ≈ 1.75 бит</li>
-                <li>Равномерное распределение из 4 символов → H = 2 бита</li>
-            </ul>
-        </div>
-    </div>
-</main>
-
-<footer>
-    <div class="container">
-        Теория информации • GitHub Pages
-    </div>
-</footer>
-
 <script>
     // ========== Huffman ==========
     class Node {
@@ -343,15 +36,27 @@
 
     // ========== UI ==========
     function addRow(symbol = '', prob = '') {
-        const rows = document.getElementById('rows');
+        const container = document.getElementById('rows');
         const div = document.createElement('div');
         div.className = 'row';
+
         div.innerHTML = `
-            <input type="text" placeholder="Символ" value="${symbol}" maxlength="3" oninput="updateSum()">
-            <input type="number" placeholder="Вероятность" value="${prob}" min="0" max="1" step="0.0001" oninput="updateSum()">
-            <button class="btn-remove" onclick="this.parentElement.remove(); updateSum();">×</button>
+            <input type="text" class="sym" placeholder="Символ" value="${symbol}" maxlength="3">
+            <input type="number" class="prob" placeholder="Вероятность" value="${prob}" min="0" step="any">
+            <button type="button" class="btn-remove">×</button>
         `;
-        rows.appendChild(div);
+
+        // Удаление строки
+        div.querySelector('.btn-remove').addEventListener('click', () => {
+            div.remove();
+            updateSum();
+        });
+
+        // Обновление суммы при вводе
+        div.querySelector('.sym').addEventListener('input', updateSum);
+        div.querySelector('.prob').addEventListener('input', updateSum);
+
+        container.appendChild(div);
         updateSum();
     }
 
@@ -361,58 +66,58 @@
         const probs = [];
 
         rows.forEach(row => {
-            const s = row.querySelector('input[type="text"]').value.trim();
-            const p = parseFloat(row.querySelector('input[type="number"]').value);
-            if (s !== '' && !isNaN(p) && p >= 0) {
+            const s = row.querySelector('.sym').value.trim();
+            const pRaw = row.querySelector('.prob').value;
+            const p = parseFloat(pRaw);
+
+            if (s !== '' && pRaw !== '' && !isNaN(p) && p >= 0) {
                 symbols.push(s);
                 probs.push(p);
             }
         });
+
         return { symbols, probs };
     }
 
     function updateSum() {
         const { probs } = getData();
         const sum = probs.reduce((a, b) => a + b, 0);
-        const sumEl = document.getElementById('probSum');
-        
-        if (sumEl) {
-            sumEl.textContent = sum.toFixed(6);
-            
-            // Цветовая индикация
-            if (Math.abs(sum - 1) < 0.0001) {
-                sumEl.style.color = '#276749';          // зелёный — всё хорошо
-            } else if (sum > 1.0001) {
-                sumEl.style.color = '#c53030';          // красный — больше 1
-            } else {
-                sumEl.style.color = '#c05621';          // оранжевый — меньше 1
-            }
+        const el = document.getElementById('probSum');
+
+        if (!el) return;
+
+        el.textContent = sum.toFixed(6);
+
+        if (Math.abs(sum - 1) < 0.00001) {
+            el.style.color = '#276749'; // зелёный
+        } else if (sum > 1) {
+            el.style.color = '#c53030'; // красный
+        } else {
+            el.style.color = '#c05621'; // оранжевый
         }
     }
 
     function normalize() {
         const rows = document.querySelectorAll('#rows .row');
         let total = 0;
-        const values = [];
+        const list = [];
 
-        // Сначала собираем все валидные вероятности
         rows.forEach(row => {
-            const input = row.querySelector('input[type="number"]');
-            const p = parseFloat(input.value);
-            if (!isNaN(p) && p >= 0) {
-                values.push({ input, p });
-                total += p;
+            const input = row.querySelector('.prob');
+            const val = parseFloat(input.value);
+            if (!isNaN(val) && val >= 0) {
+                list.push({ input, val });
+                total += val;
             }
         });
 
         if (total === 0) {
-            alert('Нет положительных вероятностей для нормализации');
+            alert('Нет чисел для нормализации');
             return;
         }
 
-        // Нормализуем
-        values.forEach(item => {
-            item.input.value = (item.p / total).toFixed(6);
+        list.forEach(item => {
+            item.input.value = (item.val / total).toFixed(6);
         });
 
         updateSum();
@@ -422,15 +127,14 @@
         const errorEl = document.getElementById('error');
         errorEl.style.display = 'none';
 
-        let { symbols, probs } = getData();
+        const { symbols, probs } = getData();
 
-        if (symbols.length < 1) {
+        if (symbols.length === 0) {
             errorEl.textContent = 'Добавьте хотя бы один символ с вероятностью';
             errorEl.style.display = 'block';
             return;
         }
 
-        // Проверка уникальности символов
         if (new Set(symbols).size !== symbols.length) {
             errorEl.textContent = 'Символы должны быть уникальными';
             errorEl.style.display = 'block';
@@ -461,7 +165,6 @@
 
         const redundancy = avgLen - entropy;
 
-        // Вывод
         document.getElementById('entropyVal').textContent = entropy.toFixed(4);
         document.getElementById('avgLenVal').textContent = avgLen.toFixed(4);
         document.getElementById('redundancyVal').textContent = redundancy.toFixed(4);
@@ -493,15 +196,19 @@
         document.getElementById('resultBox').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
-    // Стартовые строки
+    // Инициализация
     document.addEventListener('DOMContentLoaded', () => {
+        // Очищаем на всякий случай
+        document.getElementById('rows').innerHTML = '';
+
         addRow('A', '0.4');
         addRow('B', '0.3');
         addRow('C', '0.2');
         addRow('D', '0.1');
-        updateSum();
+
+        // Назначаем обработчики кнопок (на случай, если onclick не сработал)
+        document.querySelector('button[onclick="normalize()"]')?.addEventListener('click', normalize);
+        document.querySelector('button[onclick="calculate()"]')?.addEventListener('click', calculate);
+        document.querySelector('button[onclick="addRow()"]')?.addEventListener('click', () => addRow());
     });
 </script>
-
-</body>
-</html>
