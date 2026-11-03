@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Задание 2 — Теория информации</title>
+    <title>Задание 2 — Обзор теории игр</title>
     <link rel="stylesheet" href="style.css">
     
     <script>
@@ -15,6 +15,96 @@
         };
     </script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        .matrix-container {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+
+        .payoff-matrix {
+            border-collapse: collapse;
+            margin: 0 auto;
+            font-size: 1rem;
+        }
+
+        .payoff-matrix th,
+        .payoff-matrix td {
+            border: 2px solid #cbd5e0;
+            padding: 0.9rem 1.2rem;
+            text-align: center;
+            min-width: 110px;
+        }
+
+        .payoff-matrix th {
+            background: #edf2f7;
+            color: #2c5282;
+            font-weight: 600;
+        }
+
+        .payoff-matrix .corner {
+            background: #f7fafc;
+            border: none;
+        }
+
+        .payoff-matrix .nash {
+            background: #c6f6d5;
+            font-weight: 700;
+        }
+
+        .payoff-matrix .pareto {
+            box-shadow: inset 0 0 0 3px #68d391;
+        }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.25rem;
+            margin: 1rem 0 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .legend-color {
+            width: 22px;
+            height: 22px;
+            border-radius: 4px;
+            border: 1px solid #a0aec0;
+        }
+
+        .concept-card {
+            background: #f7fafc;
+            border-left: 4px solid #3182ce;
+            padding: 1rem 1.25rem;
+            margin: 1.25rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .concept-card h4 {
+            color: #2b6cb0;
+            margin-bottom: 0.4rem;
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #ebf8ff 0%, #e6fffa 100%);
+            border: 2px solid #3182ce;
+            border-radius: 14px;
+            padding: 1.5rem;
+            margin: 1.75rem 0;
+        }
+
+        .example-title {
+            font-weight: 600;
+            color: #2b6cb0;
+            margin-bottom: 0.75rem;
+            font-size: 1.1rem;
+        }
+    </style>
 </head>
 <body>
 
@@ -38,23 +128,111 @@
 <main>
     <div class="container">
         <div class="card">
-            <h2>Задание 2</h2>
-            <p style="color: #718096; margin-bottom: 1.5rem;"><em>Название задания появится позже</em></p>
+            <h2>Задание 2. Обзор теории игр</h2>
 
-            <h3>Условие</h3>
-            <div class="placeholder">
-                <p>Здесь будет условие задания</p>
+            <h3>Что такое стратегическая игра</h3>
+            <p>
+                В стратегической игре результат каждого участника зависит не только от его собственного выбора,
+                но и от выборов всех остальных игроков.
+            </p>
+
+            <div class="concept-card">
+                <h4>Нормальная форма (матричная игра)</h4>
+                <p>
+                    Для двух игроков игру удобно записывать в виде матрицы.
+                    Игрок 1 выбирает строку, Игрок 2 — столбец.
+                    В каждой клетке записана пара выигрышей: <strong>(выигрыш Игрока 1, выигрыш Игрока 2)</strong>.
+                </p>
             </div>
 
-            <h3>Решение</h3>
-            <div class="placeholder">
-                <p>Здесь будет подробное решение с расчётами и формулами</p>
+            <h3>Равновесие Нэша</h3>
+            <p>
+                Стратегический профиль называется <strong>равновесием Нэша</strong>, 
+                если ни один игрок не может улучшить свой результат, 
+                изменив только свою стратегию (при фиксированной стратегии другого игрока).
+            </p>
+            <p>
+                Другими словами: стратегия каждого игрока является <em>лучшим ответом</em> на стратегию оппонента.
+            </p>
+
+            <div class="concept-card">
+                <h4>Лучший ответ (Best Response)</h4>
+                <p>
+                    Для фиксированной стратегии противника игрок выбирает ту свою стратегию,
+                    которая даёт ему максимальный выигрыш.
+                </p>
             </div>
 
-            <h3>Ответ</h3>
-            <div class="placeholder">
-                <p>Здесь будет итоговый ответ</p>
+            <div class="concept-card">
+                <h4>Оптимальность по Парето</h4>
+                <p>
+                    Исход является Парето-оптимальным, если не существует другого исхода,
+                    в котором хотя бы одному игроку становится строго лучше, 
+                    а другому — не хуже.
+                </p>
             </div>
+
+            <!-- ========== Дилемма заключённого ========== -->
+            <div class="example-box">
+                <div class="example-title">Классический пример: Дилемма заключённого</div>
+                
+                <p>
+                    Двое подозреваемых. Каждый может <strong>Признаться</strong> или <strong>Молчать</strong>.
+                    Выигрыши указаны в годах лишения свободы (чем меньше число по модулю — тем лучше).
+                </p>
+
+                <div class="matrix-container">
+                    <table class="payoff-matrix">
+                        <tr>
+                            <th class="corner"></th>
+                            <th>Игрок 2: Молчать</th>
+                            <th>Игрок 2: Признаться</th>
+                        </tr>
+                        <tr>
+                            <th>Игрок 1: Молчать</th>
+                            <td class="pareto">(-1, -1)</td>
+                            <td>(-10, 0)</td>
+                        </tr>
+                        <tr>
+                            <th>Игрок 1: Признаться</th>
+                            <td>(0, -10)</td>
+                            <td class="nash">(-8, -8)</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background:#c6f6d5;"></div>
+                        <span>Равновесие Нэша</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background:white; box-shadow: inset 0 0 0 3px #68d391;"></div>
+                        <span>Парето-оптимальный исход</span>
+                    </div>
+                </div>
+
+                <h4 style="margin-top:1.25rem; color:#2c5282;">Анализ</h4>
+                <ul>
+                    <li><strong>Равновесие Нэша:</strong> оба признаются (−8, −8).</li>
+                    <li>Это равновесие <em>не</em> является Парето-оптимальным.</li>
+                    <li>Парето-лучший исход — оба молчат (−1, −1), но он неустойчив: каждому выгодно предать.</li>
+                    <li>Стратегия «Признаться» является <strong>строго доминирующей</strong> для обоих игроков.</li>
+                </ul>
+
+                <p style="margin-top:1rem;">
+                    Дилемма заключённого показывает важный факт:  
+                    <em>индивидуально рациональное поведение может приводить к коллективно плохому результату</em>.
+                </p>
+            </div>
+
+            <h3>Ключевые выводы</h3>
+            <ol>
+                <li>Равновесие Нэша — это устойчивость к односторонним отклонениям.</li>
+                <li>Равновесие Нэша не всегда оптимально по Парето.</li>
+                <li>Доминирующие стратегии сильно упрощают анализ игры.</li>
+                <li>В некоторых играх чистого равновесия Нэша может не быть (тогда нужны смешанные стратегии).</li>
+            </ol>
         </div>
     </div>
 </main>
