@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Задание 1 — Перестановки с повторениями</title>
+    <title>Задача 1.2 — Перестановки с повторениями</title>
     <link rel="stylesheet" href="style.css">
     
     <script>
@@ -16,142 +16,113 @@
     </script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
-  <style>
-    .calculator {
-        background: linear-gradient(135deg, #ebf8ff 0%, #e6fffa 100%);
-        border: 2px solid #3182ce;
-        border-radius: 14px;
-        padding: 1.75rem;
-        margin: 1.75rem 0;
-        box-shadow: 0 4px 12px rgba(49, 130, 206, 0.15);
-    }
-
-    .calculator-title {
-        font-size: 1.1rem;
-        font-weight: 600;
-        color: #2b6cb0;
-        margin-bottom: 1rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .input-group {
-        display: flex;
-        gap: 0.75rem;
-        margin-bottom: 0.5rem;
-        flex-wrap: wrap;
-    }
-
-    .input-group input {
-        flex: 1;
-        min-width: 220px;
-        padding: 0.9rem 1.1rem;
-        font-size: 1.15rem;
-        border: 2px solid #90cdf4;
-        border-radius: 10px;
-        outline: none;
-        transition: all 0.2s;
-        background: white;
-    }
-
-    .input-group input:focus {
-        border-color: #2b6cb0;
-        box-shadow: 0 0 0 3px rgba(43, 108, 176, 0.2);
-    }
-
-    .btn {
-        background: linear-gradient(135deg, #2b6cb0, #2c5282);
-        color: white;
-        border: none;
-        padding: 0.9rem 1.75rem;
-        font-size: 1.05rem;
-        font-weight: 600;
-        border-radius: 10px;
-        cursor: pointer;
-        transition: all 0.2s;
-        box-shadow: 0 2px 6px rgba(43, 108, 176, 0.3);
-    }
-
-    .btn:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 10px rgba(43, 108, 176, 0.4);
-        background: linear-gradient(135deg, #2c5282, #1a365d);
-    }
-
-    .btn:active {
-        transform: translateY(0);
-    }
-
-    .result-box {
-        display: none;
-        margin-top: 1.75rem;
-        background: white;
-        border-radius: 12px;
-        padding: 1.5rem;
-        border: 1px solid #bee3f8;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    }
-
-    .result-label {
-        font-size: 0.95rem;
-        color: #4a5568;
-        margin-bottom: 0.25rem;
-    }
-
-    .result-value {
-        font-size: 2.1rem;
-        font-weight: 700;
-        color: #2b6cb0;
-        margin-bottom: 1.25rem;
-        letter-spacing: -0.5px;
-    }
-
-    .steps {
-        background: #f7fafc;
-        border-radius: 10px;
-        padding: 1.25rem;
-        border: 1px solid #e2e8f0;
-    }
-
-    .step {
-        margin-bottom: 0.9rem;
-        padding-bottom: 0.9rem;
-        border-bottom: 1px dashed #cbd5e0;
-    }
-
-    .step:last-child {
-        border-bottom: none;
-        margin-bottom: 0;
-        padding-bottom: 0;
-    }
-
-    .step-title {
-        font-weight: 600;
-        color: #2c5282;
-        font-size: 0.9rem;
-        margin-bottom: 0.3rem;
-        text-transform: uppercase;
-        letter-spacing: 0.3px;
-    }
-
-    .freq-table {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-        margin: 0.6rem 0;
-    }
-
-    .freq-item {
-        background: #ebf8ff;
-        color: #2b6cb0;
-        padding: 0.4rem 0.85rem;
-        border-radius: 8px;
-        font-size: 0.95rem;
-        font-weight: 500;
-        border: 1px solid #90cdf4;
-    }
-</style>
+    <style>
+        .calculator {
+            background: linear-gradient(135deg, #ebf8ff 0%, #e6fffa 100%);
+            border: 2px solid #3182ce;
+            border-radius: 14px;
+            padding: 1.75rem;
+            margin: 1.75rem 0;
+            box-shadow: 0 4px 12px rgba(49, 130, 206, 0.15);
+        }
+        .calculator-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2b6cb0;
+            margin-bottom: 1rem;
+        }
+        .input-group {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .input-group input {
+            flex: 1;
+            min-width: 220px;
+            padding: 0.9rem 1.1rem;
+            font-size: 1.15rem;
+            border: 2px solid #90cdf4;
+            border-radius: 10px;
+            outline: none;
+            transition: all 0.2s;
+            background: white;
+        }
+        .input-group input:focus {
+            border-color: #2b6cb0;
+            box-shadow: 0 0 0 3px rgba(43, 108, 176, 0.2);
+        }
+        .btn {
+            background: linear-gradient(135deg, #2b6cb0, #2c5282);
+            color: white;
+            border: none;
+            padding: 0.9rem 1.75rem;
+            font-size: 1.05rem;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 6px rgba(43, 108, 176, 0.3);
+        }
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(43, 108, 176, 0.4);
+        }
+        .result-box {
+            display: none;
+            margin-top: 1.75rem;
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid #bee3f8;
+        }
+        .result-label {
+            font-size: 0.95rem;
+            color: #4a5568;
+            margin-bottom: 0.25rem;
+        }
+        .result-value {
+            font-size: 2.1rem;
+            font-weight: 700;
+            color: #2b6cb0;
+            margin-bottom: 1.25rem;
+        }
+        .steps {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 1.25rem;
+            border: 1px solid #e2e8f0;
+        }
+        .step {
+            margin-bottom: 0.9rem;
+            padding-bottom: 0.9rem;
+            border-bottom: 1px dashed #cbd5e0;
+        }
+        .step:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .step-title {
+            font-weight: 600;
+            color: #2c5282;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 0.3rem;
+        }
+        .freq-table {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 0.6rem 0;
+        }
+        .freq-item {
+            background: #ebf8ff;
+            color: #2b6cb0;
+            padding: 0.4rem 0.85rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            border: 1px solid #90cdf4;
+        }
+    </style>
 </head>
 <body>
 
@@ -175,42 +146,36 @@
 <main>
     <div class="container">
         <div class="card">
-            <h2>Задание 1. Перестановки с повторениями</h2>
+            <h2>Проект 1. Задача 1.2 — Перестановки с повторениями</h2>
             
             <h3>Теория</h3>
-            <p>Если среди \( n \) объектов есть повторяющиеся, то количество <strong>различных</strong> перестановок меньше, чем \( n! \).</p>
-            <p>Пусть объект \( a_1 \) встречается \( m_1 \) раз, объект \( a_2 \) — \( m_2 \) раз и т.д. Тогда число различных перестановок равно:</p>
-            
+            <p>Если среди \( n \) объектов есть повторяющиеся, то количество различных перестановок равно:</p>
             <div class="math">
                 $$ N = \dfrac{n!}{m_1! \cdot m_2! \cdot \ldots \cdot m_k!} $$
             </div>
-
-            <p>Мы делим на факториалы количеств повторений, потому что перестановки одинаковых объектов между собой не создают новых различных последовательностей.</p>
+            <p>где \( m_i \) — количество повторений каждого уникального символа.</p>
 
             <h3>Калькулятор</h3>
-            <p>Введите слово (или любую последовательность символов). Регистр не учитывается.</p>
+            <p>Введите слово или последовательность символов. Регистр не учитывается.</p>
 
-           <div class="calculator">
-    <div class="calculator-title">
-        Калькулятор перестановок
-    </div>
-    <div class="input-group">
+            <div class="calculator">
+                <div class="calculator-title">Калькулятор перестановок</div>
+                <div class="input-group">
                     <input type="text" id="wordInput" placeholder="Например: ABBA или MISSISSIPPI" maxlength="40">
                     <button class="btn" onclick="calculate()">Вычислить</button>
                 </div>
 
                 <div class="result-box" id="resultBox">
                     <div class="result-label">Количество различных перестановок</div>
-<div class="result-value" id="resultValue">—</div>
-
+                    <div class="result-value" id="resultValue">—</div>
                     <div class="steps" id="steps"></div>
                 </div>
             </div>
 
-            <h3>Примеры для проверки</h3>
+            <h3>Примеры</h3>
             <ul>
                 <li><strong>ABBA</strong> → \( \dfrac{4!}{2! \cdot 2!} = 6 \)</li>
-                <li><strong>GALOIS</strong> → \( 6! = 720 \) (все буквы разные)</li>
+                <li><strong>GALOIS</strong> → \( 6! = 720 \)</li>
                 <li><strong>MISSISSIPPI</strong> → \( \dfrac{11!}{4! \cdot 4! \cdot 2!} = 34650 \)</li>
             </ul>
         </div>
@@ -242,7 +207,6 @@
             return;
         }
 
-        // Приводим к верхнему регистру и считаем частоты
         const word = input.toUpperCase();
         const n = word.length;
         const freq = {};
@@ -251,7 +215,6 @@
             freq[char] = (freq[char] || 0) + 1;
         }
 
-        // Вычисляем
         let numerator = factorial(n);
         let denominator = 1n;
         const repeats = [];
@@ -265,57 +228,48 @@
 
         const result = numerator / denominator;
 
-        // Вывод
         resultValue.textContent = result.toString();
         resultBox.style.display = 'block';
 
-        // Шаги
-        let html = '';
-
-        html += `<div class="step">
-            <div class="step-title">Шаг 1. Длина слова</div>
-            <div>n = ${n}</div>
-        </div>`;
-
-        html += `<div class="step">
-            <div class="step-title">Шаг 2. Частоты букв</div>
-            <div class="freq-table">`;
-        
-        for (const [char, count] of Object.entries(freq)) {
-            html += `<div class="freq-item">${char} → ${count}</div>`;
-        }
-        html += `</div></div>`;
+        let html = `
+            <div class="step">
+                <div class="step-title">Шаг 1. Длина слова</div>
+                <div>n = ${n}</div>
+            </div>
+            <div class="step">
+                <div class="step-title">Шаг 2. Частоты букв</div>
+                <div class="freq-table">
+                    ${Object.entries(freq).map(([char, count]) => `<div class="freq-item">${char} → ${count}</div>`).join('')}
+                </div>
+            </div>
+        `;
 
         if (repeats.length === 0) {
-            html += `<div class="step">
-                <div class="step-title">Шаг 3. Все символы уникальны</div>
-                <div>N = ${n}! = ${result}</div>
-            </div>`;
+            html += `
+                <div class="step">
+                    <div class="step-title">Шаг 3. Все символы уникальны</div>
+                    <div>N = ${n}! = ${result}</div>
+                </div>
+            `;
         } else {
-            html += `<div class="step">
-                <div class="step-title">Шаг 3. Формула</div>
-                <div>N = ${n}! / (`;
-            
-            html += repeats.map(r => `${r.count}!`).join(' · ');
-            html += `)</div>
-            </div>`;
-
-            html += `<div class="step">
-                <div class="step-title">Шаг 4. Вычисление</div>
-                <div>${n}! = ${numerator}<br>`;
-            
-            html += repeats.map(r => `${r.count}! = ${factorial(r.count)}`).join('<br>');
-            html += `<br><br>N = ${numerator} / ${denominator} = <strong>${result}</strong></div>
-            </div>`;
+            html += `
+                <div class="step">
+                    <div class="step-title">Шаг 3. Формула</div>
+                    <div>N = ${n}! / (${repeats.map(r => r.count + '!').join(' · ')})</div>
+                </div>
+                <div class="step">
+                    <div class="step-title">Шаг 4. Вычисление</div>
+                    <div>${n}! = ${numerator}<br>
+                    ${repeats.map(r => `${r.count}! = ${factorial(r.count)}`).join('<br>')}<br><br>
+                    N = ${numerator} / ${denominator} = <strong>${result}</strong></div>
+                </div>
+            `;
         }
 
         steps.innerHTML = html;
-
-        // Прокрутка к результату
         resultBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
-    // Enter тоже запускает расчёт
     document.getElementById('wordInput').addEventListener('keypress', function(e) {
         if (e.key === 'Enter') calculate();
     });
