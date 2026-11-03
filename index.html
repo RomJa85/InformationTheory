@@ -6,7 +6,6 @@
     <title>Теория информации — Контрольная работа</title>
     <link rel="stylesheet" href="style.css">
     
-    <!-- MathJax для формул -->
     <script>
         MathJax = {
             tex: {
@@ -16,6 +15,48 @@
         };
     </script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        .projects {
+            display: grid;
+            gap: 1.25rem;
+        }
+        .project-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.2s;
+        }
+        .project-card:hover {
+            border-color: #90cdf4;
+            box-shadow: 0 4px 12px rgba(49, 130, 206, 0.1);
+        }
+        .project-card h3 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-size: 1.25rem;
+        }
+        .project-card p {
+            color: #718096;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+        .project-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+        .project-links a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.3rem 0;
+        }
+        .project-links a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
 
@@ -29,45 +70,57 @@
 <nav>
     <div class="container">
         <a href="index.html" class="active">Главная</a>
-        <a href="task1.html">Задание 1</a>
-        <a href="task2.html">Задание 2</a>
-        <a href="task3.html">Задание 3</a>
-        <a href="task4.html">Задание 4</a>
+        <a href="p1-probability.html">Проект 1</a>
+        <a href="p2-xor.html">Проект 2</a>
+        <a href="p3-entropy.html">Проект 3</a>
+        <a href="p4-game-theory.html">Проект 4</a>
     </div>
 </nav>
 
 <main>
     <div class="container">
         <div class="card">
-            <h2>О работе</h2>
-            <p>Данный сайт содержит решения заданий контрольной работы по теории информации.</p>
-            
-            <div class="placeholder" style="margin-top: 1.5rem;">
-                <p><strong>Здесь можно указать:</strong></p>
-                <p>ФИО • Группа • Вариант • Преподаватель</p>
-            </div>
-        </div>
+            <h2>Проекты</h2>
+            <p>Задания сгруппированы по тематическим проектам.</p>
 
-        <div class="card">
-            <h2>Содержание</h2>
-            <ul style="list-style: none; margin-left: 0;">
-                <li style="margin-bottom: 0.75rem;">
-                    <a href="task1.html" style="color: var(--accent); font-weight: 500; text-decoration: none;">→ Задание 1</a>
-                    <span style="color: #718096; font-size: 0.9rem;"> — название появится позже</span>
-                </li>
-                <li style="margin-bottom: 0.75rem;">
-                    <a href="task2.html" style="color: var(--accent); font-weight: 500; text-decoration: none;">→ Задание 2</a>
-                    <span style="color: #718096; font-size: 0.9rem;"> — название появится позже</span>
-                </li>
-                <li style="margin-bottom: 0.75rem;">
-                    <a href="task3.html" style="color: var(--accent); font-weight: 500; text-decoration: none;">→ Задание 3</a>
-                    <span style="color: #718096; font-size: 0.9rem;"> — название появится позже</span>
-                </li>
-                <li style="margin-bottom: 0.75rem;">
-                    <a href="task4.html" style="color: var(--accent); font-weight: 500; text-decoration: none;">→ Задание 4</a>
-                    <span style="color: #718096; font-size: 0.9rem;"> — название появится позже</span>
-                </li>
-            </ul>
+            <div class="projects">
+                <!-- Проект 1 -->
+                <div class="project-card">
+                    <h3>Проект 1. Элементарная вероятность и комбинаторика</h3>
+                    <p>Классическая вероятность и подсчёт перестановок.</p>
+                    <div class="project-links">
+                        <a href="p1-probability.html">→ Задача 1.1 — Классическая вероятность (два кубика)</a>
+                        <a href="p1-permutations.html">→ Задача 1.2 — Перестановки с повторениями</a>
+                    </div>
+                </div>
+
+                <!-- Проект 2 -->
+                <div class="project-card">
+                    <h3>Проект 2. Код Хэмминга</h3>
+                    <p>Операции чётности и основы кодирования с исправлением ошибок.</p>
+                    <div class="project-links">
+                        <a href="p2-xor.html">→ Задача 2.1 — Операция XOR (чётность)</a>
+                    </div>
+                </div>
+
+                <!-- Проект 3 -->
+                <div class="project-card">
+                    <h3>Проект 3. Энтропия Шеннона</h3>
+                    <p>Энтропия источника и оптимальное кодирование Хаффмана.</p>
+                    <div class="project-links">
+                        <a href="p3-entropy.html">→ Задача 3.1 — Энтропия и код Хаффмана</a>
+                    </div>
+                </div>
+
+                <!-- Проект 4 -->
+                <div class="project-card">
+                    <h3>Проект 4. Теория игр</h3>
+                    <p>Основные понятия теории игр и равновесие Нэша.</p>
+                    <div class="project-links">
+                        <a href="p4-game-theory.html">→ Задача 4.1 — Обзор теории игр</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </main>
