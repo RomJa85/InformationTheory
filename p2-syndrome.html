@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Задача 2.3 — Синдром и исправление ошибки</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        .calculator {
+            background: linear-gradient(135deg, #ebf8ff 0%, #e6fffa 100%);
+            border: 2px solid #3182ce;
+            border-radius: 14px;
+            padding: 1.75rem;
+            margin: 1.75rem 0;
+            box-shadow: 0 4px 12px rgba(49, 130, 206, 0.15);
+        }
+        .calculator-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2b6cb0;
+            margin-bottom: 1rem;
+        }
+        .input-group {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .input-group input {
+            flex: 1;
+            min-width: 280px;
+            padding: 0.9rem 1.1rem;
+            font-size: 1.1rem;
+            border: 2px solid #90cdf4;
+            border-radius: 10px;
+            outline: none;
+            background: white;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 1px;
+        }
+        .input-group input:focus {
+            border-color: #2b6cb0;
+            box-shadow: 0 0 0 3px rgba(43, 108, 176, 0.2);
+        }
+        .btn {
+            background: linear-gradient(135deg, #2b6cb0, #2c5282);
+            color: white;
+            border: none;
+            padding: 0.9rem 1.75rem;
+            font-size: 1.05rem;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 6px rgba(43, 108, 176, 0.3);
+        }
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(43, 108, 176, 0.4);
+        }
+        .result-box {
+            display: none;
+            margin-top: 1.5rem;
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid #bee3f8;
+        }
+        .result-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2b6cb0;
+            margin: 0.5rem 0 1rem;
+            font-family: 'Courier New', monospace;
+            word-break: break-all;
+        }
+        .steps {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 1.25rem;
+            border: 1px solid #e2e8f0;
+            margin-top: 1rem;
+        }
+        .step {
+            margin-bottom: 0.8rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px dashed #cbd5e0;
+        }
+        .step:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .step-title {
+            font-weight: 600;
+            color: #2c5282;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 0.25rem;
+        }
+        .warning {
+            background: #fffaf0;
+            border-left: 4px solid #ed8936;
+            padding: 0.75rem 1rem;
+            margin-top: 1rem;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.95rem;
+        }
+        .bit-error {
+            background: #fed7d7 !important;
+            color: #c53030;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <h1>Теория информации</h1>
+        <p>Контрольная работа</p>
+    </div>
+</header>
+
+<nav>
+    <div class="container">
+        <a href="index.html">Главная</a>
+        <a href="project1.html">Проект 1</a>
+        <a href="project2.html" class="active">Проект 2</a>
+        <a href="project3.html">Проект 3</a>
+        <a href="project4.html">Проект 4</a>
+    </div>
+</nav>
+
+<main>
+    <div class="container">
+        <div class="card">
+            <h2>Проект 2. Задача 2.3 — Синдром и исправление ошибки</h2>
+            <p style="color: #718096; margin-bottom: 1.5rem;">Обнаружение и исправление одиночной ошибки</p>
+
+            <h3>Теория</h3>
+            <p>Для принятой последовательности пересчитываются все проверки чётности. Несовпавшие проверки формируют <strong>синдром</strong> — двоичное число, равное номеру ошибочного бита.</p>
+            <div class="math">
+                $$ \text{синдром} = p_1 + 2p_2 + 4p_4 + 8p_8 + \ldots $$
+            </div>
+            <p>Если синдром ≠ 0, бит с этим номером инвертируется.</p>
+
+            <div class="warning">
+                <strong>Важно:</strong> стандартный код Хэмминга исправляет только <strong>одиночные</strong> ошибки. При двух и более ошибках синдром может указать на неправильную позицию или на валидное кодовое слово.
+            </div>
+
+            <h3>Калькулятор</h3>
+            <p>Введите принятую битовую последовательность (код Хэмминга, возможно с ошибкой).</p>
+
+            <div class="calculator">
+                <div class="calculator-title">Проверка и исправление</div>
+                
+                <div class="input-group">
+                    <input type="text" id="receivedInput" placeholder="Например: 0110011" maxlength="1035">
+                    <button class="btn" onclick="check()">Проверить</button>
+                </div>
+
+                <div class="result-box" id="resultBox">
+                    <div class="result-label">Результат</div>
+                    <div class="result-value" id="resultValue">—</div>
+                    <div class="steps" id="steps"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <div class="container">
+        Теория информации • GitHub Pages
+    </div>
+</footer>
+
+<script>
+    function check() {
+        const raw = document.getElementById('receivedInput').value;
+        const bits = raw.replace(/[^01]/g, '').split('').map(Number);
+        const n = bits.length;
+
+        const resultBox = document.getElementById('resultBox');
+        const resultValue = document.getElementById('resultValue');
+        const steps = document.getElementById('steps');
+
+        if (n === 0) {
+            alert('Введите битовую последовательность');
+            return;
+        }
+
+        // Определяем количество бит чётности
+        let r = 0;
+        while ((1 << r) <= n) r++;
+        r--; // максимальная степень двойки ≤ n
+
+        // Считаем синдром
+        let syndrome = 0;
+        const failedChecks = [];
+
+        for (let p = 0; p < r; p++) {
+            const parityPos = 1 << p;
+            if (parityPos > n) break;
+
+            let xor = 0;
+            for (let pos = 1; pos <= n; pos++) {
+                if (pos & parityPos) {
+                    xor ^= bits[pos - 1];
+                }
+            }
+            if (xor !== 0) {
+                syndrome += parityPos;
+                failedChecks.push(parityPos);
+            }
+        }
+
+        const corrected = [...bits];
+        let message = '';
+
+        if (syndrome === 0) {
+            message = 'Ошибок не обнаружено (синдром = 0)';
+        } else if (syndrome > n) {
+            message = `Синдром = ${syndrome} (вне диапазона). Возможно несколько ошибок.`;
+        } else {
+            corrected[syndrome - 1] ^= 1;
+            message = `Обнаружена ошибка в позиции ${syndrome}. Бит исправлен.`;
+        }
+
+        resultValue.textContent = corrected.join('');
+        resultBox.style.display = 'block';
+
+        let html = `
+            <div class="step">
+                <div class="step-title">Принятая последовательность</div>
+                <div>${bits.join('')}</div>
+            </div>
+            <div class="step">
+                <div class="step-title">Синдром</div>
+                <div>Синдром = ${syndrome} ${failedChecks.length ? `(не прошли проверки: ${failedChecks.join(', ')})` : '(все проверки прошли)'}</div>
+            </div>
+            <div class="step">
+                <div class="step-title">Результат</div>
+                <div>${message}</div>
+            </div>
+            <div class="step">
+                <div class="step-title">Исправленная последовательность</div>
+                <div>${corrected.join('')}</div>
+            </div>
+        `;
+
+        steps.innerHTML = html;
+        resultBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    document.getElementById('receivedInput').addEventListener('keypress', e => {
+        if (e.key === 'Enter') check();
+    });
+</script>
+
+</body>
+</html>
