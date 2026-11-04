@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Задача 3.4 — Анализ текста</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        .calculator {
+            background: linear-gradient(135deg, #ebf8ff 0%, #e6fffa 100%);
+            border: 2px solid #3182ce;
+            border-radius: 14px;
+            padding: 1.75rem;
+            margin: 1.75rem 0;
+            box-shadow: 0 4px 12px rgba(49, 130, 206, 0.15);
+        }
+        .calculator-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2b6cb0;
+            margin-bottom: 1rem;
+        }
+        textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 0.9rem;
+            font-size: 1rem;
+            border: 2px solid #90cdf4;
+            border-radius: 10px;
+            outline: none;
+            font-family: inherit;
+            resize: vertical;
+        }
+        textarea:focus {
+            border-color: #2b6cb0;
+            box-shadow: 0 0 0 3px rgba(43, 108, 176, 0.2);
+        }
+        .btn {
+            background: linear-gradient(135deg, #2b6cb0, #2c5282);
+            color: white;
+            border: none;
+            padding: 0.85rem 1.6rem;
+            font-size: 1.05rem;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 0.75rem;
+        }
+        .result-box {
+            display: none;
+            margin-top: 1.5rem;
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid #bee3f8;
+        }
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+        }
+        .metric {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 0.9rem;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+        }
+        .metric-label {
+            font-size: 0.8rem;
+            color: #718096;
+            margin-bottom: 0.25rem;
+        }
+        .metric-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #2b6cb0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+        th, td {
+            padding: 0.6rem 0.7rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        th {
+            background: #edf2f7;
+            color: #2c5282;
+            font-weight: 600;
+        }
+        .code {
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+            color: #2b6cb0;
+        }
+        .encoded-preview {
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 0.75rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            word-break: break-all;
+            max-height: 120px;
+            overflow-y: auto;
+            margin-top: 0.5rem;
+        }
+        .tree-container {
+            margin-top: 1.25rem;
+            overflow-x: auto;
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 1rem;
+            border: 1px solid #e2e8f0;
+        }
+        .tree-node {
+            display: inline-block;
+            text-align: center;
+            margin: 0 4px;
+        }
+        .node-box {
+            background: white;
+            border: 2px solid #90cdf4;
+            border-radius: 8px;
+            padding: 0.4rem 0.6rem;
+            font-size: 0.85rem;
+            min-width: 50px;
+        }
+        .node-leaf {
+            border-color: #68d391;
+            background: #f0fff4;
+        }
+        .node-prob {
+            font-size: 0.75rem;
+            color: #718096;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <h1>Теория информации</h1>
+        <p>Контрольная работа</p>
+    </div>
+</header>
+
+<nav>
+    <div class="container">
+        <a href="index.html">Главная</a>
+        <a href="project1.html">Проект 1</a>
+        <a href="project2.html">Проект 2</a>
+        <a href="project3.html" class="active">Проект 3</a>
+        <a href="project4.html">Проект 4</a>
+    </div>
+</nav>
+
+<main>
+    <div class="container">
+        <div class="card">
+            <h2>Проект 3. Задача 3.4 — Анализ текста</h2>
+            <p style="color: #718096; margin-bottom: 1.5rem;">Частоты, энтропия, коды Хаффмана и сравнение с UTF-8</p>
+
+            <h3>Что делает программа</h3>
+            <ol>
+                <li>Считает частоты символов в тексте</li>
+                <li>Вычисляет энтропию текста (бит/символ)</li>
+                <li>Строит коды Хаффмана</li>
+                <li>Сравнивает длину кода Хаффмана с UTF-8</li>
+                <li>Показывает закодированную битовую строку</li>
+                <li>Визуализирует дерево Хаффмана</li>
+            </ol>
+
+            <h3>Анализ</h3>
+
+            <div class="calculator">
+                <div class="calculator-title">Анализ текста</div>
+                
+                <textarea id="textInput" placeholder="Введите любой текст..."></textarea>
+                <button class="btn" onclick="analyze()">Анализировать</button>
+
+                <div class="result-box" id="resultBox">
+                    <div class="metrics">
+                        <div class="metric">
+                            <div class="metric-label">Символов</div>
+                            <div class="metric-value" id="charCount">—</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Уникальных</div>
+                            <div class="metric-value" id="uniqueCount">—</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Энтропия</div>
+                            <div class="metric-value" id="entropyVal">—</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Длина Хаффмана</div>
+                            <div class="metric-value" id="huffmanLen">—</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">vs UTF-8</div>
+                            <div class="metric-value" id="compression">—</div>
+                        </div>
+                    </div>
+
+                    <h4 style="margin: 1rem 0 0.5rem; color: #2c5282;">Таблица символов</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Символ</th>
+                                <th>Частота</th>
+                                <th>Вероятность</th>
+                                <th>Код</th>
+                                <th>Длина</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody"></tbody>
+                    </table>
+
+                    <h4 style="margin: 1rem 0 0.5rem; color: #2c5282;">Закодированный текст (превью)</h4>
+                    <div class="encoded-preview" id="encodedPreview"></div>
+
+                    <h4 style="margin: 1.25rem 0 0.5rem; color: #2c5282;">Дерево Хаффмана</h4>
+                    <div class="tree-container" id="treeContainer"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <div class="container">
+        Теория информации • GitHub Pages
+    </div>
+</footer>
+
+<script>
+    class Node {
+        constructor(symbol, freq, left = null, right = null) {
+            this.symbol = symbol;
+            this.freq = freq;
+            this.left = left;
+            this.right = right;
+        }
+    }
+
+    function buildHuffman(freqMap) {
+        let nodes = Object.entries(freqMap).map(([sym, f]) => new Node(sym, f));
+
+        while (nodes.length > 1) {
+            nodes.sort((a, b) => a.freq - b.freq);
+            const left = nodes.shift();
+            const right = nodes.shift();
+            const parent = new Node(null, left.freq + right.freq, left, right);
+            nodes.push(parent);
+        }
+
+        const codes = {};
+        function traverse(node, code = '') {
+            if (!node) return;
+            if (node.symbol !== null) {
+                codes[node.symbol] = code || '0';
+                return;
+            }
+            traverse(node.left, code + '0');
+            traverse(node.right, code + '1');
+        }
+        if (nodes[0]) traverse(nodes[0]);
+        return { codes, root: nodes[0] };
+    }
+
+    function renderTree(node, container) {
+        if (!node) return;
+        const div = document.createElement('div');
+        div.className = 'tree-node';
+        
+        const box = document.createElement('div');
+        box.className = 'node-box' + (node.symbol !== null ? ' node-leaf' : '');
+        if (node.symbol !== null) {
+            const display = node.symbol === ' ' ? '␣' : node.symbol === '\n' ? '↵' : node.symbol;
+            box.innerHTML = `<strong>${display}</strong><div class="node-prob">${node.freq}</div>`;
+        } else {
+            box.innerHTML = `<div class="node-prob">${node.freq}</div>`;
+        }
+        div.appendChild(box);
+
+        if (node.left || node.right) {
+            const children = document.createElement('div');
+            children.style.display = 'flex';
+            children.style.justifyContent = 'center';
+            children.style.marginTop = '8px';
+            if (node.left) renderTree(node.left, children);
+            if (node.right) renderTree(node.right, children);
+            div.appendChild(children);
+        }
+        container.appendChild(div);
+    }
+
+    function analyze() {
+        const text = document.getElementById('textInput').value;
+        if (!text) {
+            alert('Введите текст');
+            return;
+        }
+
+        const freq = {};
+        for (const ch of text) {
+            freq[ch] = (freq[ch] || 0) + 1;
+        }
+
+        const total = text.length;
+        const unique = Object.keys(freq).length;
+
+        // Энтропия
+        let entropy = 0;
+        for (const f of Object.values(freq)) {
+            const p = f / total;
+            entropy -= p * Math.log2(p);
+        }
+
+        // Хаффман
+        const { codes, root } = buildHuffman(freq);
+
+        let huffmanBits = 0;
+        let encoded = '';
+        for (const ch of text) {
+            const code = codes[ch];
+            encoded += code;
+            huffmanBits += code.length;
+        }
+
+        const utf8Bits = total * 8; // упрощённо (для ASCII/UTF-8 однобайтовых)
+        const ratio = (huffmanBits / utf8Bits * 100).toFixed(1);
+
+        // Вывод метрик
+        document.getElementById('charCount').textContent = total;
+        document.getElementById('uniqueCount').textContent = unique;
+        document.getElementById('entropyVal').textContent = entropy.toFixed(3);
+        document.getElementById('huffmanLen').textContent = (huffmanBits / total).toFixed(3);
+        document.getElementById('compression').textContent = ratio + '%';
+
+        // Таблица
+        const tbody = document.getElementById('tableBody');
+        tbody.innerHTML = '';
+        const sorted = Object.entries(freq).sort((a, b) => b[1] - a[1]);
+        sorted.forEach(([ch, f]) => {
+            const p = f / total;
+            const code = codes[ch];
+            const display = ch === ' ' ? '␣' : ch === '\n' ? '↵' : ch === '\t' ? '→' : ch;
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><strong>${display}</strong></td>
+                <td>${f}</td>
+                <td>${p.toFixed(4)}</td>
+                <td class="code">${code}</td>
+                <td>${code.length}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        // Превью закодированного
+        const preview = document.getElementById('encodedPreview');
+        preview.textContent = encoded.length > 500 ? encoded.slice(0, 500) + '...' : encoded;
+
+        // Дерево
+        const treeContainer = document.getElementById('treeContainer');
+        treeContainer.innerHTML = '';
+        renderTree(root, treeContainer);
+
+        document.getElementById('resultBox').style.display = 'block';
+        document.getElementById('resultBox').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+</script>
+
+</body>
+</html>
