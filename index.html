@@ -56,6 +56,43 @@
         .project-links a:hover {
             text-decoration: underline;
         }
+
+        /* Блок исполнителя */
+        .author-block {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            padding: 1.25rem;
+            background: #f8fafc;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+        .author-photo {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #90cdf4;
+            flex-shrink: 0;
+        }
+        .author-info h3 {
+            margin: 0 0 0.25rem 0;
+            color: var(--primary);
+            font-size: 1.3rem;
+        }
+        .author-info p {
+            margin: 0;
+            color: #718096;
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 500px) {
+            .author-block {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
     </style>
 </head>
 <body>
@@ -80,6 +117,15 @@
 <main>
     <div class="container">
         <div class="card">
+            <!-- Блок исполнителя -->
+            <div class="author-block">
+                <img src="images/photo.jpg" alt="Raman Yanukevich" class="author-photo">
+                <div class="author-info">
+                    <h3>Raman Yanukevich</h3>
+                    <p>Исполнитель контрольной работы</p>
+                </div>
+            </div>
+
             <h2>Проекты</h2>
             <p>Задания сгруппированы по тематическим проектам.</p>
 
