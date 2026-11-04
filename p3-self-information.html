@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Задача 3.2 — Собственная информация</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        .calculator {
+            background: linear-gradient(135deg, #ebf8ff 0%, #e6fffa 100%);
+            border: 2px solid #3182ce;
+            border-radius: 14px;
+            padding: 1.75rem;
+            margin: 1.75rem 0;
+            box-shadow: 0 4px 12px rgba(49, 130, 206, 0.15);
+        }
+        .calculator-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2b6cb0;
+            margin-bottom: 1rem;
+        }
+        .input-group {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .input-group label {
+            font-weight: 500;
+            min-width: 140px;
+        }
+        .input-group input {
+            width: 160px;
+            padding: 0.9rem 1rem;
+            font-size: 1.15rem;
+            border: 2px solid #90cdf4;
+            border-radius: 10px;
+            outline: none;
+            background: white;
+        }
+        .input-group input:focus {
+            border-color: #2b6cb0;
+            box-shadow: 0 0 0 3px rgba(43, 108, 176, 0.2);
+        }
+        .btn {
+            background: linear-gradient(135deg, #2b6cb0, #2c5282);
+            color: white;
+            border: none;
+            padding: 0.9rem 1.75rem;
+            font-size: 1.05rem;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 6px rgba(43, 108, 176, 0.3);
+        }
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(43, 108, 176, 0.4);
+        }
+        .result-box {
+            display: none;
+            margin-top: 1.5rem;
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid #bee3f8;
+        }
+        .result-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #2b6cb0;
+            margin: 0.5rem 0 1rem;
+        }
+        .steps {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 1.25rem;
+            border: 1px solid #e2e8f0;
+        }
+        .step {
+            margin-bottom: 0.8rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px dashed #cbd5e0;
+        }
+        .step:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .step-title {
+            font-weight: 600;
+            color: #2c5282;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <h1>Теория информации</h1>
+        <p>Контрольная работа</p>
+    </div>
+</header>
+
+<nav>
+    <div class="container">
+        <a href="index.html">Главная</a>
+        <a href="project1.html">Проект 1</a>
+        <a href="project2.html">Проект 2</a>
+        <a href="project3.html" class="active">Проект 3</a>
+        <a href="project4.html">Проект 4</a>
+    </div>
+</nav>
+
+<main>
+    <div class="container">
+        <div class="card">
+            <h2>Проект 3. Задача 3.2 — Собственная информация</h2>
+            <p style="color: #718096; margin-bottom: 1.5rem;">Self-Information</p>
+
+            <h3>Теория</h3>
+            <p>Собственная информация события с вероятностью \( p \) показывает, насколько оно «удивительно»:</p>
+            <div class="math">
+                $$ I(x) = -\log_2 p = \log_2 \frac{1}{p} $$
+            </div>
+            <p>Измеряется в битах. Чем меньше вероятность события, тем больше информации оно несёт.</p>
+            <ul>
+                <li>\( p = 1 \) → \( I = 0 \) бит (событие достоверно)</li>
+                <li>\( p = 0.5 \) → \( I = 1 \) бит</li>
+                <li>\( p = 0.125 \) → \( I = 3 \) бита</li>
+            </ul>
+
+            <h3>Калькулятор</h3>
+
+            <div class="calculator">
+                <div class="calculator-title">Собственная информация события</div>
+                
+                <div class="input-group">
+                    <label for="pInput">Вероятность p:</label>
+                    <input type="number" id="pInput" min="0" max="1" step="0.001" value="0.125" placeholder="от 0 до 1">
+                    <button class="btn" onclick="calculate()">Вычислить</button>
+                </div>
+
+                <div class="result-box" id="resultBox">
+                    <div class="result-label">Собственная информация</div>
+                    <div class="result-value" id="resultValue">—</div>
+                    <div class="steps" id="steps"></div>
+                </div>
+            </div>
+
+            <h3>Примеры</h3>
+            <ul>
+                <li>\( p = 0.5 \) → 1 бит</li>
+                <li>\( p = 0.25 \) → 2 бита</li>
+                <li>\( p = 0.125 \) → 3 бита</li>
+                <li>\( p = 1 \) → 0 бит</li>
+            </ul>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <div class="container">
+        Теория информации • GitHub Pages
+    </div>
+</footer>
+
+<script>
+    function calculate() {
+        const p = parseFloat(document.getElementById('pInput').value);
+        const resultBox = document.getElementById('resultBox');
+        const resultValue = document.getElementById('resultValue');
+        const steps = document.getElementById('steps');
+
+        if (isNaN(p) || p <= 0 || p > 1) {
+            alert('Введите вероятность в диапазоне (0, 1]');
+            return;
+        }
+
+        const info = -Math.log2(p);
+
+        resultValue.textContent = info.toFixed(4) + ' бит';
+        resultBox.style.display = 'block';
+
+        let html = `
+            <div class="step">
+                <div class="step-title">Формула</div>
+                <div>I = −log₂(${p}) = log₂(1/${p})</div>
+            </div>
+            <div class="step">
+                <div class="step-title">Вычисление</div>
+                <div>I = ${info.toFixed(6)} бит</div>
+            </div>
+        `;
+
+        if (p === 1) {
+            html += `<div class="step"><div class="step-title">Интерпретация</div><div>Событие достоверно — новой информации нет</div></div>`;
+        } else if (Math.abs(info - Math.round(info)) < 0.0001) {
+            html += `<div class="step"><div class="step-title">Интерпретация</div><div>Ровно ${Math.round(info)} бит</div></div>`;
+        }
+
+        steps.innerHTML = html;
+        resultBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    document.getElementById('pInput').addEventListener('keypress', e => {
+        if (e.key === 'Enter') calculate();
+    });
+
+    // Автоматический расчёт при загрузке
+    document.addEventListener('DOMContentLoaded', calculate);
+</script>
+
+</body>
+</html>
