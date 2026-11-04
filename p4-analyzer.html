@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Задача 4.2 — Анализатор игры</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        .calculator {
+            background: linear-gradient(135deg, #ebf8ff 0%, #e6fffa 100%);
+            border: 2px solid #3182ce;
+            border-radius: 14px;
+            padding: 1.75rem;
+            margin: 1.75rem 0;
+            box-shadow: 0 4px 12px rgba(49, 130, 206, 0.15);
+        }
+        .calculator-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2b6cb0;
+            margin-bottom: 1rem;
+        }
+        .matrix-wrap {
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        .payoff-matrix {
+            border-collapse: collapse;
+            margin: 0 auto;
+        }
+        .payoff-matrix th, .payoff-matrix td {
+            border: 2px solid #cbd5e0;
+            padding: 0.5rem;
+            text-align: center;
+            min-width: 100px;
+        }
+        .payoff-matrix th {
+            background: #edf2f7;
+            color: #2c5282;
+        }
+        .payoff-matrix input[type="text"] {
+            width: 70px;
+            padding: 0.3rem;
+            border: 1px solid #a0aec0;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        .payoff-matrix input[type="number"] {
+            width: 50px;
+            padding: 0.25rem;
+            border: 1px solid #a0aec0;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .cell {
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .cell:hover { background: #ebf8ff; }
+        .cell.nash { background: #c6f6d5; }
+        .cell.pareto { box-shadow: inset 0 0 0 3px #68d391; }
+        .cell.selected { outline: 3px solid #2b6cb0; }
+        .btn {
+            background: linear-gradient(135deg, #2b6cb0, #2c5282);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+        .result-box {
+            display: none;
+            margin-top: 1.5rem;
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid #bee3f8;
+        }
+        .result-section {
+            margin-bottom: 1rem;
+        }
+        .result-section h4 {
+            color: #2c5282;
+            margin-bottom: 0.4rem;
+        }
+        .tag {
+            display: inline-block;
+            background: #edf2f7;
+            padding: 0.25rem 0.6rem;
+            border-radius: 6px;
+            margin: 0.2rem;
+            font-size: 0.9rem;
+        }
+        .tag.nash { background: #c6f6d5; }
+        .tag.pareto { background: #bee3f8; }
+        .deviation-box {
+            background: #f7fafc;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 0.75rem;
+            font-size: 0.95rem;
+        }
+        .legend {
+            display: flex;
+            gap: 1.25rem;
+            flex-wrap: wrap;
+            margin: 0.75rem 0;
+            font-size: 0.9rem;
+        }
+        .legend-item { display: flex; align-items: center; gap: 0.4rem; }
+        .legend-color {
+            width: 18px; height: 18px; border-radius: 4px; border: 1px solid #a0aec0;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <h1>Теория информации</h1>
+        <p>Контрольная работа</p>
+    </div>
+</header>
+
+<nav>
+    <div class="container">
+        <a href="index.html">Главная</a>
+        <a href="project1.html">Проект 1</a>
+        <a href="project2.html">Проект 2</a>
+        <a href="project3.html">Проект 3</a>
+        <a href="project4.html" class="active">Проект 4</a>
+    </div>
+</nav>
+
+<main>
+    <div class="container">
+        <div class="card">
+            <h2>Проект 4. Задача 4.2 — Анализатор игры</h2>
+            <p style="color: #718096; margin-bottom: 1.5rem;">Матрица выигрышей, равновесия Нэша, Парето, доминирующие стратегии</p>
+
+            <h3>Как пользоваться</h3>
+            <ol>
+                <li>Отредактируйте названия стратегий (заголовки)</li>
+                <li>Введите выигрыши в формате (u₁, u₂) в каждой клетке</li>
+                <li>Нажмите «Анализировать»</li>
+                <li>Кликните на любую клетку, чтобы увидеть односторонние отклонения</li>
+            </ol>
+
+            <div class="calculator">
+                <div class="calculator-title">Матрица выигрышей 2×2</div>
+
+                <div class="matrix-wrap">
+                    <table class="payoff-matrix" id="matrix">
+                        <tr>
+                            <th></th>
+                            <th><input type="text" id="s2_0" value="Молчать"></th>
+                            <th><input type="text" id="s2_1" value="Признаться"></th>
+                        </tr>
+                        <tr>
+                            <th><input type="text" id="s1_0" value="Молчать"></th>
+                            <td class="cell" data-r="0" data-c="0">
+                                <input type="number" class="p1" value="-1"> , <input type="number" class="p2" value="-1">
+                            </td>
+                            <td class="cell" data-r="0" data-c="1">
+                                <input type="number" class="p1" value="-10"> , <input type="number" class="p2" value="0">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><input type="text" id="s1_1" value="Признаться"></th>
+                            <td class="cell" data-r="1" data-c="0">
+                                <input type="number" class="p1" value="0"> , <input type="number" class="p2" value="-10">
+                            </td>
+                            <td class="cell" data-r="1" data-c="1">
+                                <input type="number" class="p1" value="-8"> , <input type="number" class="p2" value="-8">
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="legend">
+                    <div class="legend-item"><div class="legend-color" style="background:#c6f6d5;"></div> Равновесие Нэша</div>
+                    <div class="legend-item"><div class="legend-color" style="background:white; box-shadow:inset 0 0 0 3px #68d391;"></div> Парето-оптимальный</div>
+                </div>
+
+                <button class="btn" onclick="analyze()">Анализировать</button>
+
+                <div class="result-box" id="resultBox">
+                    <div class="result-section">
+                        <h4>Чистые равновесия Нэша</h4>
+                        <div id="nashList"></div>
+                    </div>
+                    <div class="result-section">
+                        <h4>Парето-оптимальные исходы</h4>
+                        <div id="paretoList"></div>
+                    </div>
+                    <div class="result-section">
+                        <h4>Доминирующие стратегии</h4>
+                        <div id="domList"></div>
+                    </div>
+                    <div class="deviation-box" id="deviationBox" style="display:none;">
+                        <strong>Выбранный исход:</strong> <span id="selectedName"></span><br>
+                        <div id="deviationText"></div>
+                    </div>
+                </div>
+            </div>
+
+            <p style="margin-top:1rem; color:#718096; font-size:0.9rem;">
+                По умолчанию загружена «Дилемма заключённого». Выигрыши — годы лишения свободы (меньше по модулю — лучше).
+            </p>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <div class="container">
+        Теория информации • GitHub Pages
+    </div>
+</footer>
+
+<script>
+    let lastAnalysis = null;
+
+    function getMatrix() {
+        const cells = document.querySelectorAll('.cell');
+        const matrix = [[], []];
+        cells.forEach(cell => {
+            const r = parseInt(cell.dataset.r);
+            const c = parseInt(cell.dataset.c);
+            const p1 = parseFloat(cell.querySelector('.p1').value) || 0;
+            const p2 = parseFloat(cell.querySelector('.p2').value) || 0;
+            matrix[r][c] = { p1, p2 };
+        });
+        return matrix;
+    }
+
+    function getNames() {
+        return {
+            s1: [document.getElementById('s1_0').value || 'S1_0', document.getElementById('s1_1').value || 'S1_1'],
+            s2: [document.getElementById('s2_0').value || 'S2_0', document.getElementById('s2_1').value || 'S2_1']
+        };
+    }
+
+    function analyze() {
+        const M = getMatrix();
+        const names = getNames();
+
+        // Best responses
+        const br1 = [0, 0]; // for each column, best row for player 1
+        const br2 = [0, 0]; // for each row, best column for player 2
+
+        for (let c = 0; c < 2; c++) {
+            br1[c] = M[0][c].p1 >= M[1][c].p1 ? 0 : 1;
+            if (M[0][c].p1 === M[1][c].p1) br1[c] = -1; // tie
+        }
+        for (let r = 0; r < 2; r++) {
+            br2[r] = M[r][0].p2 >= M[r][1].p2 ? 0 : 1;
+            if (M[r][0].p2 === M[r][1].p2) br2[r] = -1;
+        }
+
+        // Nash equilibria
+        const nash = [];
+        for (let r = 0; r < 2; r++) {
+            for (let c = 0; c < 2; c++) {
+                const isBR1 = br1[c] === r || br1[c] === -1;
+                const isBR2 = br2[r] === c || br2[r] === -1;
+                if (isBR1 && isBR2) nash.push({ r, c });
+            }
+        }
+
+        // Pareto
+        const all = [{r:0,c:0},{r:0,c:1},{r:1,c:0},{r:1,c:1}];
+        const pareto = all.filter(o => {
+            return !all.some(other => 
+                other !== o &&
+                M[other.r][other.c].p1 >= M[o.r][o.c].p1 &&
+                M[other.r][other.c].p2 >= M[o.r][o.c].p2 &&
+                (M[other.r][other.c].p1 > M[o.r][o.c].p1 || M[other.r][other.c].p2 > M[o.r][o.c].p2)
+            );
+        });
+
+        // Dominant strategies
+        let dom1 = 'нет';
+        if (M[0][0].p1 > M[1][0].p1 && M[0][1].p1 > M[1][1].p1) dom1 = names.s1[0] + ' (строгая)';
+        else if (M[1][0].p1 > M[0][0].p1 && M[1][1].p1 > M[0][1].p1) dom1 = names.s1[1] + ' (строгая)';
+
+        let dom2 = 'нет';
+        if (M[0][0].p2 > M[0][1].p2 && M[1][0].p2 > M[1][1].p2) dom2 = names.s2[0] + ' (строгая)';
+        else if (M[0][1].p2 > M[0][0].p2 && M[1][1].p2 > M[1][0].p2) dom2 = names.s2[1] + ' (строгая)';
+
+        // Подсветка
+        document.querySelectorAll('.cell').forEach(cell => {
+            cell.classList.remove('nash', 'pareto', 'selected');
+            const r = parseInt(cell.dataset.r);
+            const c = parseInt(cell.dataset.c);
+            if (nash.some(n => n.r === r && n.c === c)) cell.classList.add('nash');
+            if (pareto.some(p => p.r === r && p.c === c)) cell.classList.add('pareto');
+        });
+
+        // Вывод
+        const nashList = document.getElementById('nashList');
+        nashList.innerHTML = nash.length 
+            ? nash.map(n => `<span class="tag nash">${names.s1[n.r]} / ${names.s2[n.c]} (${M[n.r][n.c].p1}, ${M[n.r][n.c].p2})</span>`).join('')
+            : '<span class="tag">Нет чистых равновесий Нэша</span>';
+
+        const paretoList = document.getElementById('paretoList');
+        paretoList.innerHTML = pareto.map(p => `<span class="tag pareto">${names.s1[p.r]} / ${names.s2[p.c]} (${M[p.r][p.c].p1}, ${M[p.r][p.c].p2})</span>`).join('');
+
+        document.getElementById('domList').innerHTML = `
+            <span class="tag">Игрок 1: ${dom1}</span>
+            <span class="tag">Игрок 2: ${dom2}</span>
+        `;
+
+        lastAnalysis = { M, names, nash, pareto };
+        document.getElementById('resultBox').style.display = 'block';
+        document.getElementById('deviationBox').style.display = 'none';
+    }
+
+    // Клик по клетке
+    document.querySelectorAll('.cell').forEach(cell => {
+        cell.addEventListener('click', () => {
+            if (!lastAnalysis) return;
+            document.querySelectorAll('.cell').forEach(c => c.classList.remove('selected'));
+            cell.classList.add('selected');
+
+            const r = parseInt(cell.dataset.r);
+            const c = parseInt(cell.dataset.c);
+            const { M, names } = lastAnalysis;
+            const payoff = M[r][c];
+
+            document.getElementById('selectedName').textContent = 
+                `${names.s1[r]} / ${names.s2[c]} (${payoff.p1}, ${payoff.p2})`;
+
+            let text = '';
+            // Player 1 deviations
+            const otherR = 1 - r;
+            const p1Alt = M[otherR][c].p1;
+            text += `<strong>Игрок 1:</strong> при фиксированной стратегии противника «${names.s2[c]}» `;
+            if (p1Alt > payoff.p1) text += `выгоднее перейти на «${names.s1[otherR]}» (${p1Alt} > ${payoff.p1})`;
+            else if (p1Alt < payoff.p1) text += `отклонение на «${names.s1[otherR]}» ухудшает результат (${p1Alt} < ${payoff.p1})`;
+            else text += `отклонение не меняет выигрыш`;
+
+            text += '<br>';
+            // Player 2 deviations
+            const otherC = 1 - c;
+            const p2Alt = M[r][otherC].p2;
+            text += `<strong>Игрок 2:</strong> при фиксированной стратегии противника «${names.s1[r]}» `;
+            if (p2Alt > payoff.p2) text += `выгоднее перейти на «${names.s2[otherC]}» (${p2Alt} > ${payoff.p2})`;
+            else if (p2Alt < payoff.p2) text += `отклонение на «${names.s2[otherC]}» ухудшает результат (${p2Alt} < ${payoff.p2})`;
+            else text += `отклонение не меняет выигрыш`;
+
+            document.getElementById('deviationText').innerHTML = text;
+            document.getElementById('deviationBox').style.display = 'block';
+        });
+    });
+
+    // Автоанализ при загрузке
+    document.addEventListener('DOMContentLoaded', analyze);
+</script>
+
+</body>
+</html>
