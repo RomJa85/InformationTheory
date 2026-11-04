@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Задача 4.3 — Симуляция поведения (Monte Carlo)</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        .calculator {
+            background: linear-gradient(135deg, #ebf8ff 0%, #e6fffa 100%);
+            border: 2px solid #3182ce;
+            border-radius: 14px;
+            padding: 1.75rem;
+            margin: 1.75rem 0;
+            box-shadow: 0 4px 12px rgba(49, 130, 206, 0.15);
+        }
+        .calculator-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2b6cb0;
+            margin-bottom: 1rem;
+        }
+        .input-group {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .input-group label {
+            font-weight: 500;
+            min-width: 260px;
+        }
+        .input-group input {
+            width: 120px;
+            padding: 0.7rem 0.9rem;
+            font-size: 1.05rem;
+            border: 2px solid #90cdf4;
+            border-radius: 10px;
+            outline: none;
+            background: white;
+        }
+        .input-group input:focus {
+            border-color: #2b6cb0;
+            box-shadow: 0 0 0 3px rgba(43, 108, 176, 0.2);
+        }
+        .btn {
+            background: linear-gradient(135deg, #2b6cb0, #2c5282);
+            color: white;
+            border: none;
+            padding: 0.85rem 1.6rem;
+            font-size: 1.05rem;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+        .result-box {
+            display: none;
+            margin-top: 1.5rem;
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid #bee3f8;
+        }
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        .metric {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+        }
+        .metric-label {
+            font-size: 0.85rem;
+            color: #718096;
+            margin-bottom: 0.3rem;
+        }
+        .metric-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #2b6cb0;
+        }
+        .metric-sub {
+            font-size: 0.85rem;
+            color: #718096;
+            margin-top: 0.25rem;
+        }
+        .bar-container {
+            background: #edf2f7;
+            border-radius: 8px;
+            height: 24px;
+            margin: 0.4rem 0;
+            overflow: hidden;
+            position: relative;
+        }
+        .bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4299e1, #2b6cb0);
+            border-radius: 8px;
+            transition: width 0.3s;
+        }
+        .bar-target {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            width: 2px;
+            background: #c53030;
+        }
+        .info {
+            font-size: 0.9rem;
+            color: #4a5568;
+            margin-top: 0.75rem;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <h1>Теория информации</h1>
+        <p>Контрольная работа</p>
+    </div>
+</header>
+
+<nav>
+    <div class="container">
+        <a href="index.html">Главная</a>
+        <a href="project1.html">Проект 1</a>
+        <a href="project2.html">Проект 2</a>
+        <a href="project3.html">Проект 3</a>
+        <a href="project4.html" class="active">Проект 4</a>
+    </div>
+</nav>
+
+<main>
+    <div class="container">
+        <div class="card">
+            <h2>Проект 4. Задача 4.3 — Симуляция поведения (Monte Carlo)</h2>
+            <p style="color: #718096; margin-bottom: 1.5rem;">Сходимость наблюдаемых частот к заданным вероятностям</p>
+
+            <h3>Идея</h3>
+            <p>Модель из курса: обычный человек признаётся примерно в 50% случаев, а член преступной группы — значительно реже. Мы многократно повторяем случайный эксперимент и смотрим, насколько наблюдаемые частоты приближаются к заданным вероятностям.</p>
+
+            <div class="calculator">
+                <div class="calculator-title">Monte Carlo симуляция</div>
+
+                <div class="input-group">
+                    <label for="pRegular">Обычный человек — вероятность признания (%):</label>
+                    <input type="number" id="pRegular" min="0" max="100" value="50">
+                </div>
+                <div class="input-group">
+                    <label for="pCrime">Член группы — вероятность признания (%):</label>
+                    <input type="number" id="pCrime" min="0" max="100" value="10">
+                </div>
+                <div class="input-group">
+                    <label for="trials">Число испытаний:</label>
+                    <input type="number" id="trials" min="100" max="1000000" value="1000" step="100">
+                </div>
+
+                <button class="btn" onclick="runSimulation()">Запустить симуляцию</button>
+
+                <div class="result-box" id="resultBox">
+                    <div class="metrics">
+                        <div class="metric">
+                            <div class="metric-label">Обычный человек</div>
+                            <div class="metric-value" id="obsRegular">—</div>
+                            <div class="metric-sub" id="subRegular"></div>
+                            <div class="bar-container">
+                                <div class="bar-fill" id="barRegular"></div>
+                                <div class="bar-target" id="targetRegular"></div>
+                            </div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Член группы</div>
+                            <div class="metric-value" id="obsCrime">—</div>
+                            <div class="metric-sub" id="subCrime"></div>
+                            <div class="bar-container">
+                                <div class="bar-fill" id="barCrime"></div>
+                                <div class="bar-target" id="targetCrime"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info" id="infoText"></div>
+                </div>
+            </div>
+
+            <p style="margin-top:1rem; color:#718096; font-size:0.9rem;">
+                Красная линия на шкале — целевая вероятность. Чем больше испытаний, тем ближе наблюдаемая частота к заданной.
+            </p>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <div class="container">
+        Теория информации • GitHub Pages
+    </div>
+</footer>
+
+<script>
+    function runSimulation() {
+        const pReg = parseFloat(document.getElementById('pRegular').value) / 100;
+        const pCrime = parseFloat(document.getElementById('pCrime').value) / 100;
+        const N = parseInt(document.getElementById('trials').value);
+
+        if (isNaN(pReg) || isNaN(pCrime) || isNaN(N) || N < 1) {
+            alert('Введите корректные значения');
+            return;
+        }
+
+        let countReg = 0;
+        let countCrime = 0;
+
+        for (let i = 0; i < N; i++) {
+            if (Math.random() < pReg) countReg++;
+            if (Math.random() < pCrime) countCrime++;
+        }
+
+        const obsReg = countReg / N;
+        const obsCrime = countCrime / N;
+
+        document.getElementById('obsRegular').textContent = (obsReg * 100).toFixed(1) + '%';
+        document.getElementById('subRegular').textContent = `${countReg} из ${N.toLocaleString()}`;
+        document.getElementById('barRegular').style.width = (obsReg * 100) + '%';
+        document.getElementById('targetRegular').style.left = (pReg * 100) + '%';
+
+        document.getElementById('obsCrime').textContent = (obsCrime * 100).toFixed(1) + '%';
+        document.getElementById('subCrime').textContent = `${countCrime} из ${N.toLocaleString()}`;
+        document.getElementById('barCrime').style.width = (obsCrime * 100) + '%';
+        document.getElementById('targetCrime').style.left = (pCrime * 100) + '%';
+
+        const diffReg = Math.abs(obsReg - pReg) * 100;
+        const diffCrime = Math.abs(obsCrime - pCrime) * 100;
+
+        document.getElementById('infoText').innerHTML = `
+            Отклонение обычного человека: <strong>${diffReg.toFixed(2)} п.п.</strong><br>
+            Отклонение члена группы: <strong>${diffCrime.toFixed(2)} п.п.</strong><br>
+            <span style="color:#718096;">При увеличении числа испытаний отклонение обычно уменьшается (закон больших чисел).</span>
+        `;
+
+        document.getElementById('resultBox').style.display = 'block';
+        document.getElementById('resultBox').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+</script>
+
+</body>
+</html>
