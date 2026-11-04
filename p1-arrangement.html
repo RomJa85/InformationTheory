@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Задача 1.4 — Вероятность расположения букв</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        .calculator {
+            background: linear-gradient(135deg, #ebf8ff 0%, #e6fffa 100%);
+            border: 2px solid #3182ce;
+            border-radius: 14px;
+            padding: 1.75rem;
+            margin: 1.75rem 0;
+            box-shadow: 0 4px 12px rgba(49, 130, 206, 0.15);
+        }
+        .calculator-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2b6cb0;
+            margin-bottom: 1rem;
+        }
+        .input-group {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .input-group input {
+            flex: 1;
+            min-width: 220px;
+            padding: 0.9rem 1.1rem;
+            font-size: 1.15rem;
+            border: 2px solid #90cdf4;
+            border-radius: 10px;
+            outline: none;
+            background: white;
+            text-transform: uppercase;
+        }
+        .input-group input:focus {
+            border-color: #2b6cb0;
+            box-shadow: 0 0 0 3px rgba(43, 108, 176, 0.2);
+        }
+        .btn {
+            background: linear-gradient(135deg, #2b6cb0, #2c5282);
+            color: white;
+            border: none;
+            padding: 0.9rem 1.75rem;
+            font-size: 1.05rem;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 6px rgba(43, 108, 176, 0.3);
+        }
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(43, 108, 176, 0.4);
+        }
+        .result-box {
+            display: none;
+            margin-top: 1.5rem;
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid #bee3f8;
+        }
+        .result-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2b6cb0;
+            margin: 0.5rem 0 1rem;
+        }
+        .steps {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 1.25rem;
+            border: 1px solid #e2e8f0;
+        }
+        .step {
+            margin-bottom: 0.8rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px dashed #cbd5e0;
+        }
+        .step:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .step-title {
+            font-weight: 600;
+            color: #2c5282;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 0.25rem;
+        }
+        .letters {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.4rem;
+        }
+        .letter-vowel { background: #c6f6d5; color: #276749; padding: 0.3rem 0.6rem; border-radius: 6px; font-weight: 600; }
+        .letter-consonant { background: #fed7d7; color: #c53030; padding: 0.3rem 0.6rem; border-radius: 6px; font-weight: 600; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <h1>Теория информации</h1>
+        <p>Контрольная работа</p>
+    </div>
+</header>
+
+<nav>
+    <div class="container">
+        <a href="index.html">Главная</a>
+        <a href="project1.html" class="active">Проект 1</a>
+        <a href="project2.html">Проект 2</a>
+        <a href="project3.html">Проект 3</a>
+        <a href="project4.html">Проект 4</a>
+    </div>
+</nav>
+
+<main>
+    <div class="container">
+        <div class="card">
+            <h2>Проект 1. Задача 1.4 — Вероятность особого расположения букв</h2>
+            <p style="color: #718096; margin-bottom: 1.5rem;">Вероятность того, что все гласные стоят раньше всех согласных</p>
+
+            <h3>Теория</h3>
+            <p>Рассматривается случайная перестановка букв слова. Нужно найти вероятность того, что <strong>все гласные</strong> окажутся раньше <strong>всех согласных</strong>.</p>
+            <p>Если в слове \( V \) гласных и \( C \) согласных (всего \( n = V + C \) букв), то:</p>
+            <div class="math">
+                $$ P = \dfrac{V! \cdot C!}{n!} = \dfrac{1}{\binom{n}{V}} $$
+            </div>
+            <p>Это верно независимо от того, какие именно гласные и согласные, при условии, что мы рассматриваем все перестановки равновероятными (с учётом повторений букв формула усложняется — здесь считаем буквы различимыми по позициям или без учёта повторений в знаменателе).</p>
+
+            <h3>Калькулятор</h3>
+            <p>Введите слово. Буквы A, E, I, O, U, Y считаются гласными (регистр не важен).</p>
+
+            <div class="calculator">
+                <div class="calculator-title">Вероятность «все гласные раньше согласных»</div>
+                
+                <div class="input-group">
+                    <input type="text" id="wordInput" placeholder="Например: GALOIS" maxlength="20">
+                    <button class="btn" onclick="calculate()">Вычислить</button>
+                </div>
+
+                <div class="result-box" id="resultBox">
+                    <div class="result-label">Вероятность</div>
+                    <div class="result-value" id="resultValue">—</div>
+                    <div class="steps" id="steps"></div>
+                </div>
+            </div>
+
+            <h3>Классический пример</h3>
+            <p>Слово <strong>GALOIS</strong> (3 гласные + 3 согласные):</p>
+            <p>\( P = \dfrac{3! \cdot 3!}{6!} = \dfrac{1}{20} = 5\% \)</p>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <div class="container">
+        Теория информации • GitHub Pages
+    </div>
+</footer>
+
+<script>
+    const VOWELS = new Set(['A','E','I','O','U','Y']);
+
+    function factorial(n) {
+        let res = 1n;
+        for (let i = 2n; i <= BigInt(n); i++) res *= i;
+        return res;
+    }
+
+    function combination(n, k) {
+        if (k > n || k < 0) return 0n;
+        if (k === 0 || k === n) return 1n;
+        if (k > n - k) k = n - k;
+        let res = 1n;
+        for (let i = 1; i <= k; i++) {
+            res = res * BigInt(n - k + i) / BigInt(i);
+        }
+        return res;
+    }
+
+    function calculate() {
+        const raw = document.getElementById('wordInput').value.trim().toUpperCase();
+        const resultBox = document.getElementById('resultBox');
+        const resultValue = document.getElementById('resultValue');
+        const steps = document.getElementById('steps');
+
+        if (!raw) {
+            alert('Введите слово');
+            return;
+        }
+
+        const letters = raw.replace(/[^A-Z]/g, '').split('');
+        if (letters.length === 0) {
+            alert('Нет букв');
+            return;
+        }
+
+        const vowels = letters.filter(l => VOWELS.has(l));
+        const consonants = letters.filter(l => !VOWELS.has(l));
+        const V = vowels.length;
+        const C = consonants.length;
+        const n = V + C;
+
+        if (V === 0 || C === 0) {
+            resultValue.textContent = '1 (100%)';
+            resultBox.style.display = 'block';
+            steps.innerHTML = `<div class="step"><div class="step-title">Тривиальный случай</div><div>Все буквы одного типа</div></div>`;
+            return;
+        }
+
+        const totalPerms = factorial(n);
+        const favorable = factorial(V) * factorial(C);
+        const comb = combination(n, V);
+        const probability = Number(favorable) / Number(totalPerms);
+
+        resultValue.textContent = `${probability.toFixed(6)} (${(probability * 100).toFixed(2)}%)`;
+        resultBox.style.display = 'block';
+
+        let html = `
+            <div class="step">
+                <div class="step-title">Разбор слова</div>
+                <div>Гласные (${V}): <div class="letters">${vowels.map(l => `<span class="letter-vowel">${l}</span>`).join('')}</div></div>
+                <div style="margin-top:0.5rem">Согласные (${C}): <div class="letters">${consonants.map(l => `<span class="letter-consonant">${l}</span>`).join('')}</div></div>
+            </div>
+            <div class="step">
+                <div class="step-title">Формула</div>
+                <div>P = ${V}! · ${C}! / ${n}! = 1 / C(${n}, ${V})</div>
+            </div>
+            <div class="step">
+                <div class="step-title">Вычисление</div>
+                <div>${V}! · ${C}! = ${favorable}<br>
+                ${n}! = ${totalPerms}<br>
+                C(${n}, ${V}) = ${comb}<br><br>
+                P = ${favorable} / ${totalPerms} = 1/${comb} ≈ ${probability.toFixed(6)}</div>
+            </div>
+        `;
+
+        steps.innerHTML = html;
+        resultBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    document.getElementById('wordInput').addEventListener('keypress', e => {
+        if (e.key === 'Enter') calculate();
+    });
+</script>
+
+</body>
+</html>
