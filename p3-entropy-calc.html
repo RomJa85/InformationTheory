@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Задача 3.3 — Энтропия Шеннона</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        .calculator {
+            background: linear-gradient(135deg, #ebf8ff 0%, #e6fffa 100%);
+            border: 2px solid #3182ce;
+            border-radius: 14px;
+            padding: 1.75rem;
+            margin: 1.75rem 0;
+            box-shadow: 0 4px 12px rgba(49, 130, 206, 0.15);
+        }
+        .calculator-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2b6cb0;
+            margin-bottom: 1rem;
+        }
+        .rows {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .row {
+            display: flex;
+            gap: 0.6rem;
+            align-items: center;
+        }
+        .row input {
+            padding: 0.6rem 0.8rem;
+            font-size: 1rem;
+            border: 2px solid #90cdf4;
+            border-radius: 8px;
+            outline: none;
+        }
+        .row input:focus {
+            border-color: #2b6cb0;
+            box-shadow: 0 0 0 3px rgba(43, 108, 176, 0.15);
+        }
+        .row input.prob { flex: 1; min-width: 120px; }
+        .btn-remove {
+            background: #fc8181;
+            color: white;
+            border: none;
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+        }
+        .btn {
+            background: linear-gradient(135deg, #2b6cb0, #2c5282);
+            color: white;
+            border: none;
+            padding: 0.7rem 1.3rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-right: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        .btn-secondary {
+            background: #edf2f7;
+            color: #2d3748;
+        }
+        .result-box {
+            display: none;
+            margin-top: 1.5rem;
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid #bee3f8;
+        }
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        .metric {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+        }
+        .metric-label {
+            font-size: 0.85rem;
+            color: #718096;
+            margin-bottom: 0.3rem;
+        }
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2b6cb0;
+        }
+        .sum-display {
+            margin: 0.8rem 0;
+            font-size: 1rem;
+        }
+        .sum-display strong { font-size: 1.1rem; }
+        .error {
+            color: #c53030;
+            background: #fff5f5;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <h1>Теория информации</h1>
+        <p>Контрольная работа</p>
+    </div>
+</header>
+
+<nav>
+    <div class="container">
+        <a href="index.html">Главная</a>
+        <a href="project1.html">Проект 1</a>
+        <a href="project2.html">Проект 2</a>
+        <a href="project3.html" class="active">Проект 3</a>
+        <a href="project4.html">Проект 4</a>
+    </div>
+</nav>
+
+<main>
+    <div class="container">
+        <div class="card">
+            <h2>Проект 3. Задача 3.3 — Энтропия Шеннона</h2>
+            <p style="color: #718096; margin-bottom: 1.5rem;">Расчёт энтропии распределения вероятностей</p>
+
+            <h3>Теория</h3>
+            <p>Энтропия Шеннона — средняя неопределённость источника:</p>
+            <div class="math">
+                $$ H(X) = -\sum_{i} p_i \log_2 p_i $$
+            </div>
+            <p>Максимальная энтропия достигается при равномерном распределении:</p>
+            <div class="math">
+                $$ H_{\max} = \log_2 n $$
+            </div>
+            <p>где \( n \) — число возможных исходов.</p>
+
+            <h3>Калькулятор</h3>
+            <p>Введите вероятности. Сумма должна быть равна 1 (можно нормализовать).</p>
+
+            <div class="calculator">
+                <div class="calculator-title">Энтропия распределения</div>
+
+                <div class="rows" id="rows"></div>
+
+                <div class="sum-display">
+                    Сумма вероятностей: <strong id="probSum">0.000000</strong>
+                </div>
+
+                <div>
+                    <button class="btn btn-secondary" onclick="addRow()">+ Добавить</button>
+                    <button class="btn btn-secondary" onclick="normalize()">Нормализовать</button>
+                    <button class="btn" onclick="calculate()">Вычислить</button>
+                </div>
+
+                <div class="error" id="error"></div>
+
+                <div class="result-box" id="resultBox">
+                    <div class="metrics">
+                        <div class="metric">
+                            <div class="metric-label">Энтропия H(X)</div>
+                            <div class="metric-value" id="entropyVal">—</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">H<sub>max</sub></div>
+                            <div class="metric-value" id="hmaxVal">—</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">От равномерного</div>
+                            <div class="metric-value" id="distanceVal">—</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Примеры</h3>
+            <ul>
+                <li>Равномерное из 4 исходов (0.25, 0.25, 0.25, 0.25) → H = 2 бита = H<sub>max</sub></li>
+                <li>0.5, 0.25, 0.125, 0.125 → H ≈ 1.75 бита</li>
+            </ul>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <div class="container">
+        Теория информации • GitHub Pages
+    </div>
+</footer>
+
+<script>
+    function addRow(prob = '') {
+        const container = document.getElementById('rows');
+        const div = document.createElement('div');
+        div.className = 'row';
+        div.innerHTML = `
+            <input type="number" class="prob" placeholder="Вероятность" value="${prob}" min="0" max="1" step="any">
+            <button type="button" class="btn-remove">×</button>
+        `;
+        div.querySelector('.btn-remove').addEventListener('click', () => {
+            div.remove();
+            updateSum();
+        });
+        div.querySelector('.prob').addEventListener('input', updateSum);
+        container.appendChild(div);
+        updateSum();
+    }
+
+    function getProbs() {
+        const inputs = document.querySelectorAll('#rows .prob');
+        const probs = [];
+        inputs.forEach(inp => {
+            const p = parseFloat(inp.value);
+            if (!isNaN(p) && p >= 0) probs.push(p);
+        });
+        return probs;
+    }
+
+    function updateSum() {
+        const probs = getProbs();
+        const sum = probs.reduce((a, b) => a + b, 0);
+        const el = document.getElementById('probSum');
+        el.textContent = sum.toFixed(6);
+        if (Math.abs(sum - 1) < 0.00001) el.style.color = '#276749';
+        else if (sum > 1) el.style.color = '#c53030';
+        else el.style.color = '#c05621';
+    }
+
+    function normalize() {
+        const inputs = document.querySelectorAll('#rows .prob');
+        let total = 0;
+        const list = [];
+        inputs.forEach(inp => {
+            const val = parseFloat(inp.value);
+            if (!isNaN(val) && val >= 0) {
+                list.push({ inp, val });
+                total += val;
+            }
+        });
+        if (total === 0) {
+            alert('Нет чисел для нормализации');
+            return;
+        }
+        list.forEach(item => {
+            item.inp.value = (item.val / total).toFixed(6);
+        });
+        updateSum();
+    }
+
+    function calculate() {
+        const errorEl = document.getElementById('error');
+        errorEl.style.display = 'none';
+
+        const probs = getProbs();
+        if (probs.length === 0) {
+            errorEl.textContent = 'Добавьте хотя бы одну вероятность';
+            errorEl.style.display = 'block';
+            return;
+        }
+
+        const sum = probs.reduce((a, b) => a + b, 0);
+        if (Math.abs(sum - 1) > 0.001) {
+            errorEl.textContent = `Сумма = ${sum.toFixed(6)}. Должна быть равна 1. Нажмите «Нормализовать».`;
+            errorEl.style.display = 'block';
+            return;
+        }
+
+        let entropy = 0;
+        probs.forEach(p => {
+            if (p > 0) entropy -= p * Math.log2(p);
+        });
+
+        const n = probs.length;
+        const hmax = Math.log2(n);
+        const distance = hmax - entropy;
+        const relative = (distance / hmax * 100).toFixed(1);
+
+        document.getElementById('entropyVal').textContent = entropy.toFixed(4);
+        document.getElementById('hmaxVal').textContent = hmax.toFixed(4);
+        document.getElementById('distanceVal').textContent = distance.toFixed(4);
+
+        document.getElementById('resultBox').style.display = 'block';
+        document.getElementById('resultBox').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('rows').innerHTML = '';
+        addRow('0.5');
+        addRow('0.25');
+        addRow('0.125');
+        addRow('0.125');
+        updateSum();
+    });
+</script>
+
+</body>
+</html>
