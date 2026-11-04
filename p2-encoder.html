@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Задача 2.2 — Кодирование Хэмминга</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        .calculator {
+            background: linear-gradient(135deg, #ebf8ff 0%, #e6fffa 100%);
+            border: 2px solid #3182ce;
+            border-radius: 14px;
+            padding: 1.75rem;
+            margin: 1.75rem 0;
+            box-shadow: 0 4px 12px rgba(49, 130, 206, 0.15);
+        }
+        .calculator-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2b6cb0;
+            margin-bottom: 1rem;
+        }
+        .input-group {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .input-group input {
+            flex: 1;
+            min-width: 280px;
+            padding: 0.9rem 1.1rem;
+            font-size: 1.1rem;
+            border: 2px solid #90cdf4;
+            border-radius: 10px;
+            outline: none;
+            background: white;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 1px;
+        }
+        .input-group input:focus {
+            border-color: #2b6cb0;
+            box-shadow: 0 0 0 3px rgba(43, 108, 176, 0.2);
+        }
+        .btn {
+            background: linear-gradient(135deg, #2b6cb0, #2c5282);
+            color: white;
+            border: none;
+            padding: 0.9rem 1.75rem;
+            font-size: 1.05rem;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 6px rgba(43, 108, 176, 0.3);
+        }
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(43, 108, 176, 0.4);
+        }
+        .result-box {
+            display: none;
+            margin-top: 1.5rem;
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid #bee3f8;
+        }
+        .result-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #2b6cb0;
+            margin: 0.5rem 0 1rem;
+            font-family: 'Courier New', monospace;
+            word-break: break-all;
+            letter-spacing: 1px;
+        }
+        .steps {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 1.25rem;
+            border: 1px solid #e2e8f0;
+            margin-top: 1rem;
+        }
+        .step {
+            margin-bottom: 0.8rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px dashed #cbd5e0;
+        }
+        .step:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .step-title {
+            font-weight: 600;
+            color: #2c5282;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 0.25rem;
+        }
+        .bit-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin: 0.5rem 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+        .bit {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        .bit-data { background: #bee3f8; color: #2c5282; }
+        .bit-parity { background: #fbd38d; color: #c05621; }
+        .bit-pos { font-size: 0.7rem; color: #718096; text-align: center; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <h1>Теория информации</h1>
+        <p>Контрольная работа</p>
+    </div>
+</header>
+
+<nav>
+    <div class="container">
+        <a href="index.html">Главная</a>
+        <a href="project1.html">Проект 1</a>
+        <a href="project2.html" class="active">Проект 2</a>
+        <a href="project3.html">Проект 3</a>
+        <a href="project4.html">Проект 4</a>
+    </div>
+</nav>
+
+<main>
+    <div class="container">
+        <div class="card">
+            <h2>Проект 2. Задача 2.2 — Кодирование Хэмминга</h2>
+            <p style="color: #718096; margin-bottom: 1.5rem;">Encoder: информационные биты → код Хэмминга</p>
+
+            <h3>Теория</h3>
+            <p>Для \( m \) информационных бит выбирается минимальное \( r \) такое, что:</p>
+            <div class="math">
+                $$ 2^r \ge m + r + 1 $$
+            </div>
+            <p>Биты чётности занимают позиции степеней двойки: 1, 2, 4, 8, ...</p>
+            <p>Каждый бит чётности вычисляется как XOR всех бит, в двоичной записи позиции которых соответствующий бит равен 1.</p>
+
+            <h3>Калькулятор</h3>
+            <p>Введите информационные биты (0 и 1). Остальные символы будут удалены. Максимум 1024 бита.</p>
+
+            <div class="calculator">
+                <div class="calculator-title">Кодировщик Хэмминга</div>
+                
+                <div class="input-group">
+                    <input type="text" id="dataInput" placeholder="Например: 1011 или 1 0 1 1" maxlength="1024">
+                    <button class="btn" onclick="encode()">Закодировать</button>
+                </div>
+
+                <div class="result-box" id="resultBox">
+                    <div class="result-label">Закодированная последовательность</div>
+                    <div class="result-value" id="resultValue">—</div>
+                    <div class="steps" id="steps"></div>
+                </div>
+            </div>
+
+            <h3>Пример</h3>
+            <p>Данные: <code>1011</code> → 4 бита данных + 3 бита чётности = 7 бит кода.</p>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <div class="container">
+        Теория информации • GitHub Pages
+    </div>
+</footer>
+
+<script>
+    function encode() {
+        const raw = document.getElementById('dataInput').value;
+        const dataBits = raw.replace(/[^01]/g, '').split('').map(Number);
+        const m = dataBits.length;
+
+        const resultBox = document.getElementById('resultBox');
+        const resultValue = document.getElementById('resultValue');
+        const steps = document.getElementById('steps');
+
+        if (m === 0) {
+            alert('Введите хотя бы один бит (0 или 1)');
+            return;
+        }
+
+        if (m > 1024) {
+            alert('Максимум 1024 бита данных');
+            return;
+        }
+
+        // Находим минимальное r
+        let r = 0;
+        while (Math.pow(2, r) < m + r + 1) r++;
+
+        const total = m + r;
+        const code = new Array(total + 1).fill(0); // 1-indexed
+
+        // Расставляем биты данных
+        let dataIdx = 0;
+        for (let pos = 1; pos <= total; pos++) {
+            if ((pos & (pos - 1)) !== 0) { // не степень двойки
+                code[pos] = dataBits[dataIdx++];
+            }
+        }
+
+        // Вычисляем биты чётности
+        for (let p = 0; p < r; p++) {
+            const parityPos = 1 << p;
+            let xor = 0;
+            for (let pos = 1; pos <= total; pos++) {
+                if (pos & parityPos) {
+                    xor ^= code[pos];
+                }
+            }
+            code[parityPos] = xor;
+        }
+
+        const encoded = code.slice(1).join('');
+
+        resultValue.textContent = encoded;
+        resultBox.style.display = 'block';
+
+        // Шаги
+        let html = `
+            <div class="step">
+                <div class="step-title">Число информационных бит</div>
+                <div>m = ${m}</div>
+            </div>
+            <div class="step">
+                <div class="step-title">Число бит чётности</div>
+                <div>Минимальное r такое, что 2<sup>r</sup> ≥ ${m} + r + 1<br>r = ${r}</div>
+            </div>
+            <div class="step">
+                <div class="step-title">Длина кода</div>
+                <div>${m} + ${r} = ${total} бит</div>
+            </div>
+            <div class="step">
+                <div class="step-title">Позиции</div>
+                <div class="bit-grid">
+        `;
+
+        for (let pos = 1; pos <= Math.min(total, 32); pos++) { // ограничиваем отображение для длинных
+            const isParity = (pos & (pos - 1)) === 0;
+            html += `<div style="text-align:center"><div class="bit ${isParity ? 'bit-parity' : 'bit-data'}">${code[pos]}</div><div class="bit-pos">${pos}${isParity ? ' P' : ''}</div></div>`;
+        }
+        if (total > 32) html += `<div style="align-self:center; color:#718096;">... ещё ${total-32} бит</div>`;
+
+        html += `
+                </div>
+                <div style="font-size:0.85rem; color:#718096; margin-top:0.5rem;">
+                    <span style="background:#fbd38d; padding:0 6px; border-radius:3px;">P</span> — бит чётности &nbsp;
+                    <span style="background:#bee3f8; padding:0 6px; border-radius:3px;">D</span> — бит данных
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-title">Итог</div>
+                <div>${encoded}</div>
+            </div>
+        `;
+
+        steps.innerHTML = html;
+        resultBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    document.getElementById('dataInput').addEventListener('keypress', e => {
+        if (e.key === 'Enter') encode();
+    });
+</script>
+
+</body>
+</html>
