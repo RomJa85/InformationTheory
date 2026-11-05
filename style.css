@@ -27,6 +27,7 @@ body::before {
     background: rgba(247, 250, 252, 0.88); /* белая полупрозрачная подложка */
     z-index: -1;
 }
+
 * {
     margin: 0;
     padding: 0;
