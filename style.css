@@ -21,39 +21,29 @@ body {
     color: var(--text);
     line-height: 1.6;
     min-height: 100vh;
-    /* Фон-доска виден только по краям */
     background-image: url('images/blackboard.jpg');
     background-size: cover;
     background-attachment: fixed;
     background-position: center;
-    background-color: #1a202c; /* запасной цвет, если картинка не загрузилась */
+    background-color: #1a202c;
 }
 
-/* Центральный контейнер полностью непрозрачный */
+/* Центральный блок полностью непрозрачный — доска видна только по бокам */
 .container {
     max-width: 900px;
     margin: 0 auto;
     padding: 0 1.5rem;
     background: var(--bg);
     min-height: 100vh;
-    box-shadow: 0 0 40px rgba(0,0,0,0.15);
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.25);
 }
 
-/* Header и nav остаются сплошными */
+/* Header */
 header {
     background: linear-gradient(135deg, var(--primary), var(--primary-light));
     color: white;
     padding: 1.5rem 0;
     box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
-}
-
-nav {
-    background: white;
-    border-bottom: 1px solid var(--border);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
 header h1 {
@@ -82,6 +72,9 @@ nav .container {
     gap: 0.5rem;
     padding: 0.75rem 1.5rem;
     overflow-x: auto;
+    background: white;
+    min-height: auto;
+    box-shadow: none;
 }
 
 nav a {
