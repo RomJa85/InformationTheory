@@ -28,14 +28,12 @@ body {
     background-color: #1a202c;
 }
 
-/* Центральный блок полностью непрозрачный — доска видна только по бокам */
+/* Центральный блок — доска видна только по бокам */
 .container {
     max-width: 900px;
     margin: 0 auto;
     padding: 0 1.5rem;
     background: var(--bg);
-    min-height: 100vh;
-    box-shadow: 0 0 50px rgba(0, 0, 0, 0.25);
 }
 
 /* Header */
@@ -44,6 +42,10 @@ header {
     color: white;
     padding: 1.5rem 0;
     box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+}
+
+header .container {
+    background: transparent;
 }
 
 header h1 {
@@ -73,8 +75,6 @@ nav .container {
     padding: 0.75rem 1.5rem;
     overflow-x: auto;
     background: white;
-    min-height: auto;
-    box-shadow: none;
 }
 
 nav a {
@@ -101,6 +101,12 @@ nav a.active {
 /* Main content */
 main {
     padding: 2rem 0 4rem;
+}
+
+main .container {
+    background: var(--bg);
+    min-height: calc(100vh - 200px); /* только основной контент тянется вниз */
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.25);
 }
 
 .card {
@@ -163,7 +169,10 @@ footer {
     text-align: center;
     padding: 1.25rem;
     font-size: 0.9rem;
-    margin-top: auto;
+}
+
+footer .container {
+    background: transparent;
 }
 
 footer a {
